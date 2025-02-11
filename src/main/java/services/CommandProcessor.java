@@ -93,18 +93,22 @@ public class CommandProcessor {
                     save();
                 }
                 case "EXIT" -> {
-                    Message.send("Exiting the program.");
+                    Message.send("***** POOphonia: Goodbye! *****");
                     System.exit(0);
                 }
                 case "LIST" -> {
                     library.listAllItems();
                 }
                 case "LOAD" -> {
-                    if (actionAndArgs.length == 2) {
-                        library = load(actionAndArgs[1], "LOAD " + actionAndArgs[1] + " failed.");
-                        Message.send("Library loaded from " + actionAndArgs[1] + ".csv successfully.");
-                    } else {
-                        Message.send("Invalid arguments for LOAD.");
+                    switch (actionAndArgs.length) {
+                        case 1 ->
+                            processCommand("LOAD POOphonia");
+                        case 2 -> {
+                            library = load(actionAndArgs[1], "LOAD " + actionAndArgs[1] + " failed.");
+                            Message.send("Library in file " + actionAndArgs[1] + " loaded successfully.");
+                        }
+                        default ->
+                            Message.send("Invalid arguments for LOAD.");
                     }
                 }
 
@@ -126,7 +130,7 @@ public class CommandProcessor {
                             try {
                                 int id = Integer.parseInt(actionAndArgs[1]);
                                 MusicItem item = library.searchItem(id);
-                                play(item, "PLAY item ID " + id + " failed; no such item");
+                                play(item, "PLAY item ID " + id + " failed; no such item.");
                             } catch (NumberFormatException e) {
                                 Message.send("Invalid arguments for PLAY.");
                             }
@@ -144,7 +148,7 @@ public class CommandProcessor {
                             Message.send("Removed " + item.info() + " successfully.");
                             save();
                         } else {
-                            Message.send("REMOVE item ID " + id + " failed; no such item");
+                            Message.send("REMOVE item ID " + id + " failed; no such item.");
                         }
                     } catch (NumberFormatException e) {
                         Message.send("Invalid arguments for REMOVE.");
@@ -170,7 +174,7 @@ public class CommandProcessor {
                             if (item != null) {
                                 searchedItem = item;
                                 if (library.getIsPlaying() == null) {
-                                    Message.send(item.info() + " is ready to PLAY");
+                                    Message.send(item.info() + " is ready to PLAY.");
                                 } else {
                                     Message.send(item.toString());
                                 }
@@ -184,12 +188,12 @@ public class CommandProcessor {
                                 if (item != null) {
                                     searchedItem = item;
                                     if (library.getIsPlaying() == null) {
-                                        Message.send(item.info() + " is ready to PLAY");
+                                        Message.send(item.info() + " is ready to PLAY.");
                                     } else {
                                         Message.send(item.toString());
                                     }
                                 } else {
-                                    Message.send("SEARCH item ID " + id + " failed; no such item");
+                                    Message.send("SEARCH item ID " + id + " failed; no such item.");
                                 }
                             } catch (NumberFormatException e) {
                                 Message.send("Invalid arguments for SEARCH.");
@@ -222,7 +226,8 @@ public class CommandProcessor {
 
     public static void processCommands(MusicLibrary library) {
         CommandProcessor.library = library;
-
+        processCommand("LOAD");
+        Message.send("Sourcing commands...");
         try (BufferedReader reader = new BufferedReader(new FileReader("data/commands.txt"))) {
             String line;
             while ((line = reader.readLine()) != null) {

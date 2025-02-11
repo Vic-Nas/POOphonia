@@ -55,7 +55,7 @@ REMOVE 99
 PLAY 2
 
 # Clearing the library before exiting
-#CLEAR
+CLEAR
 
 # Exit the program
 EXIT
