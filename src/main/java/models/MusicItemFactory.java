@@ -1,5 +1,7 @@
 package models;
 
+import java.util.Arrays;
+
 /**
  * MusicItemFactory is a class for creating MusicItem objects from CSV data.
  * This class provides a static method to generate instances of different music
@@ -37,7 +39,9 @@ public class MusicItemFactory {
 
         // We have 7 parts, process each MusicItem types
         //   MusicItem type is in parts[0]
-        switch (parts[0].toLowerCase()) {
+        String firstPart = parts[0].toLowerCase();
+        parts = Arrays.copyOfRange(parts, 1, 7);
+        switch (firstPart) {
             case "song":
                 return new Song(parts);
 
