@@ -5,7 +5,9 @@
 package services;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,11 +18,58 @@ import ui.Message;
 
 public class CommandProcessor {
 
+    private static String libraryName = "POOphonia";
+
     private static MusicLibrary library;
     private static MusicItem searchedItem;
     private static ArrayList<String> ACTIONS = new ArrayList<>(
             Arrays.asList("ADD", "CLEAR", "EXIT", "LIST", "LOAD", "PAUSE",
                     "PLAY", "REMOVE", "SAVE", "SEARCH", "SOURCE", "STOP"));
+
+    private static void play(MusicItem item, String badOut) {
+        if (item != null) {
+            if (library.getIsPlaying() == null) {
+                library.playItem(item);
+                Message.send("Playing " + item.info() + ".");
+            } else {
+                Message.send(library.getIsPlaying().info() + " is already playing.");
+            }
+
+        } else {
+            Message.send(badOut);
+        }
+    }
+
+    private static MusicLibrary load(String libraryName, String badOut) {
+        MusicLibrary loaded = new MusicLibrary();
+        try (BufferedReader reader = new BufferedReader(new FileReader("data/" + libraryName + ".csv"))) {
+            String line;
+            String[] parts;
+            while ((line = reader.readLine()) != null) {
+                parts = line.split(",");
+                MusicItem read = MusicItemFactory.createFromCSV(parts);
+                loaded.addItem(read);
+            }
+        } catch (IOException e) {
+            // Message.send("Error reading library " + libraryName + ".");
+            Message.send(badOut);
+        }
+        return loaded;
+    }
+
+    private static void save() {
+        final ArrayList<String> items = new ArrayList<>();
+        for (MusicItem item : library.getItems()) {
+            items.add(item.to_csv());
+        }
+        String csv = String.join("\n", items);
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("data/" + libraryName + ".csv"))) {
+            writer.write(csv);
+            Message.send("Library saved successfully to " + libraryName);
+        } catch (IOException e) {
+            Message.send("Error saving library " + libraryName + ": " + e.getMessage());
+        }
+    }
 
     public static void processCommand(String command) {
         if (!command.isBlank() && !command.startsWith("#")) {
@@ -31,13 +80,17 @@ public class CommandProcessor {
                     MusicItem added = MusicItemFactory.createFromCSV(actionAndArgs[1].split(","));
                     if (added != null) {
                         library.addItem(added);
+                        Message.send(added.info() + " added to the library sucessfully.");
+                        save();
                     } else {
                         Message.send("Invalid arguments for ADD.");
                     }
                 }
                 case "CLEAR" -> {
                     library.clearAllItems();
-                    Message.send("Library cleared.");
+                    Message.send("Music library has been cleared successfully.");
+
+                    save();
                 }
                 case "EXIT" -> {
                     Message.send("Exiting the program.");
@@ -47,40 +100,39 @@ public class CommandProcessor {
                     library.listAllItems();
                 }
                 case "LOAD" -> {
-                    // Implement the LOAD functionality
-                    Message.send("LOAD functionality not implemented yet.");
+                    if (actionAndArgs.length == 2) {
+                        library = load(actionAndArgs[1], "LOAD " + actionAndArgs[1] + " failed.");
+                        Message.send("Library loaded from " + actionAndArgs[1] + ".csv successfully.");
+                    } else {
+                        Message.send("Invalid arguments for LOAD.");
+                    }
                 }
+
                 case "PAUSE" -> {
-                    // Implement the PAUSE functionality
-                    Message.send("PAUSE functionality not implemented yet.");
+                    if (library.getIsPlaying() != null) {
+                        library.pauseItem();
+                        Message.send("Paused " + library.getIsPlaying().info() + ".");
+                    } else {
+                        Message.send("No item is currently playing.");
+                    }
                 }
                 case "PLAY" -> {
                     if (actionAndArgs.length != 1) {
                         String[] playArgs = actionAndArgs[1].split(" by ");
                         if (playArgs.length == 2) {
-                            MusicItem item = library.searchItem(playArgs[1]);
-                            if (item != null) {
-                                library.playItem(item);
-                            } else {
-                                Message.send("Item not found.");
-                            }
+                            MusicItem item = library.searchItem(playArgs[0], playArgs[1]);
+                            play(item, "PLAY item: " + actionAndArgs[1] + " failed; no such item.");
                         } else {
                             try {
                                 int id = Integer.parseInt(actionAndArgs[1]);
                                 MusicItem item = library.searchItem(id);
-                                if (item != null) {
-                                    library.playItem(item);
-                                } else {
-                                    Message.send("Item not found.");
-                                }
+                                play(item, "PLAY item ID " + id + " failed; no such item");
                             } catch (NumberFormatException e) {
                                 Message.send("Invalid arguments for PLAY.");
                             }
                         }
-                    } else if (searchedItem != null) {
-                        library.playItem(searchedItem);
                     } else {
-                        Message.send("No item searched");
+                        play(searchedItem, "No item searched");
                     }
                 }
                 case "REMOVE" -> {
@@ -89,27 +141,41 @@ public class CommandProcessor {
                         MusicItem item = library.searchItem(id);
                         if (item != null) {
                             library.removeItem(item);
-                            Message.send("Item removed.");
+                            Message.send("Removed " + item.info() + " successfully.");
+                            save();
                         } else {
-                            Message.send("Item not found.");
+                            Message.send("REMOVE item ID " + id + " failed; no such item");
                         }
                     } catch (NumberFormatException e) {
                         Message.send("Invalid arguments for REMOVE.");
                     }
                 }
                 case "SAVE" -> {
-                    // Implement the SAVE functionality
-                    Message.send("SAVE functionality not implemented yet.");
+                    switch (actionAndArgs.length) {
+                        case 1 ->
+                            save();
+                        case 2 -> {
+                            libraryName = actionAndArgs[1];
+                            save();
+                        }
+                        default ->
+                            Message.send("Invalid arguments for SAVE.");
+                    }
                 }
                 case "SEARCH" -> {
-                    if (actionAndArgs.length > 1) {
+                    if (actionAndArgs.length == 2) {
                         String[] searchArgs = actionAndArgs[1].split(" by ");
                         if (searchArgs.length == 2) {
-                            MusicItem item = library.searchItem(searchArgs[1]);
+                            MusicItem item = library.searchItem(searchArgs[0], searchArgs[1]);
                             if (item != null) {
-                                Message.send(item.toString());
+                                searchedItem = item;
+                                if (library.getIsPlaying() == null) {
+                                    Message.send(item.info() + " is ready to PLAY");
+                                } else {
+                                    Message.send(item.toString());
+                                }
                             } else {
-                                Message.send("Item not found.");
+                                Message.send("SEARCH " + actionAndArgs[1] + " failed. No item found.");
                             }
                         } else {
                             try {
@@ -117,17 +183,16 @@ public class CommandProcessor {
                                 MusicItem item = library.searchItem(id);
                                 if (item != null) {
                                     searchedItem = item;
-                                    Message.send(item.toString());
+                                    if (library.getIsPlaying() == null) {
+                                        Message.send(item.info() + " is ready to PLAY");
+                                    } else {
+                                        Message.send(item.toString());
+                                    }
                                 } else {
-                                    Message.send("Item not found.");
+                                    Message.send("SEARCH item ID " + id + " failed; no such item");
                                 }
                             } catch (NumberFormatException e) {
-                                MusicItem item = library.searchItem(actionAndArgs[1]);
-                                if (item != null) {
-                                    Message.send(item.toString());
-                                } else {
-                                    Message.send("Item not found.");
-                                }
+                                Message.send("Invalid arguments for SEARCH.");
                             }
                         }
                     } else {
@@ -139,8 +204,14 @@ public class CommandProcessor {
                     Message.send("SOURCE functionality not implemented yet.");
                 }
                 case "STOP" -> {
-                    // Implement the STOP functionality
-                    Message.send("STOP functionality not implemented yet.");
+                    if (library.getIsPlaying() != null) {
+                        library.stopItem();
+                        Message.send("Stopped playing.");
+                    } else {
+                        Message.send("No item is currently playing.");
+                    }
+                    // Implement the LOAD functionality
+                    Message.send("LOAD functionality not implemented yet.");
                 }
                 default ->
                     Message.send("Unknown operation.");

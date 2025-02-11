@@ -5,6 +5,7 @@ public abstract class MusicItem {
     private int id, releaseYear;
     private String title;
     private boolean isPlaying;
+    private boolean isPaused;
 
     public void play() {
         this.isPlaying = true;
@@ -12,11 +13,12 @@ public abstract class MusicItem {
     }
 
     public void pause() {
-
+        this.isPaused = true;
     }
 
     public void stop() {
         this.isPlaying = false;
+        this.isPaused = false;
     }
 
     @Override
@@ -62,4 +64,9 @@ public abstract class MusicItem {
     // public void setIsPlaying(boolean isPlaying) {
     //     this.isPlaying = isPlaying;
     // }
+    public abstract String info();
+
+    public boolean isPaused() {
+        return isPaused;
+    }
 }

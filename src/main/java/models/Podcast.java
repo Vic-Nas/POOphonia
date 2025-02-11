@@ -41,12 +41,19 @@ public class Podcast extends MusicItem {
 
     @Override
     public String to_csv() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return String.format("podcast,%d,%s,%d,%s,%s,%d", this.getId(), this.getTitle(),
+                this.getReleaseYear(), this.getHost(), this.getTopic(), this.getEpisodeNumber());
+    }
+
+    @Override
+    public String info() {
+        return String.format("Podcast %s episode %d of %d on %s by %s",
+                this.getTitle(), this.getEpisodeNumber(), this.getReleaseYear(), this.getTopic(), this.getHost());
     }
 
     @Override
     public String toString() {
-        return String.format("Podcast %s episode %d of %d on %s by %s", this.getTitle(),
-                this.getEpisodeNumber(), this.getReleaseYear(), this.getTopic(), this.getHost());
+        return String.format("Podcast [ID=%d, Title=%s, Release Year=%d, Host=%s, Episode Number=%d, Topic=%s]",
+                this.getId(), this.getTitle(), this.getReleaseYear(), this.getHost(), this.getEpisodeNumber(), this.getTopic());
     }
 }

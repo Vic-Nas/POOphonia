@@ -40,12 +40,25 @@ public class Album extends MusicItem {
 
     @Override
     public String to_csv() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return String.format("album,%d,%s,%d,%s,%s,%d", this.getId(), this.getTitle(),
+                this.getReleaseYear(), this.getArtist(), this.getLabel(), this.getNumberOfTracks());
+    }
+
+    @Override
+    public String info() {
+        return String.format("Album %s of %d with %d tracks by %s",
+                this.getTitle(), this.getReleaseYear(), this.getNumberOfTracks(), this.getArtist());
     }
 
     @Override
     public String toString() {
-        return String.format("Album %s with %d by %s",
-                this.getTitle(), this.getNumberOfTracks(), this.getArtist());
+        String part1, part2 = "";
+
+        part1 = String.format("ALbum [ID=%d, Title=%s, Release Year=%d, ",
+                this.getId(), this.getTitle(), this.getReleaseYear());
+
+        return String.format("Album [ID=%d, Title=%s, Release Year=%d, Artist=%s, Tracks=%d, Label=%s]",
+                this.getId(), this.getTitle(), this.getReleaseYear(), this.getArtist(), this.getNumberOfTracks(), this.getLabel());
+
     }
 }

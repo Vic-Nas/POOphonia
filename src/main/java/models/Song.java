@@ -16,7 +16,8 @@ public class Song extends MusicItem {
 
     @Override
     public String to_csv() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return String.format("song,%d,%s,%d,%s,%s,%d", this.getId(), this.getTitle(),
+                this.getReleaseYear(), this.getArtist(), this.getGenre(), this.getDuration());
     }
 
     public int getDuration() {
@@ -44,8 +45,14 @@ public class Song extends MusicItem {
     }
 
     @Override
-    public String toString() {
+    public String info() {
         return String.format("Song of %d %s by %s",
                 this.getReleaseYear(), this.getTitle(), this.getArtist());
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Song [ID=%d, Title=%s, Release Year=%d, Artist=%s, Duration=%d, Genre=%s]",
+                this.getId(), this.getTitle(), this.getReleaseYear(), this.getArtist(), this.getDuration(), this.getGenre());
     }
 }

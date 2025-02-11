@@ -52,7 +52,7 @@ public class MusicItemFactory {
                 return new Podcast(parts);
 
             default:
-                return null; // if the type is not recognized, return null
+                return null;
         }
     }
 }
