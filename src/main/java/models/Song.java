@@ -1,14 +1,17 @@
 package models;
 
+import java.util.Arrays;
+
 public class Song extends MusicItem {
 
     private int duration;
     private String artist, genre;
 
-    public Song(String artist, int duration, String genre) {
-        this.artist = artist;
-        this.duration = duration;
-        this.genre = genre;
+    public Song(String[] parts) {
+        this.setElements(Arrays.copyOfRange(parts, 0, 3));
+        this.artist = parts[3];
+        this.duration = Integer.parseInt(parts[5]);
+        this.genre = parts[4];
     }
 
     @Override
@@ -42,6 +45,7 @@ public class Song extends MusicItem {
 
     @Override
     public String toString() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return String.format("Song of %d %s by %s",
+                this.getReleaseYear(), this.getTitle(), this.getArtist());
     }
 }

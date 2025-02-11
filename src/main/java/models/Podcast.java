@@ -1,14 +1,18 @@
 package models;
 
+import java.util.Arrays;
+
 public class Podcast extends MusicItem {
 
     private int episodeNumber;
     private String host, topic;
 
-    public Podcast(int episodeNumber, String host, String topic) {
-        this.episodeNumber = episodeNumber;
-        this.host = host;
-        this.topic = topic;
+    public Podcast(String[] parts) {
+        this.setElements(Arrays.copyOfRange(parts, 0, 3));
+        this.host = parts[3];
+        this.topic = parts[4];
+        this.episodeNumber = Integer.parseInt(parts[5]);
+
     }
 
     public int getEpisodeNumber() {
@@ -42,6 +46,7 @@ public class Podcast extends MusicItem {
 
     @Override
     public String toString() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return String.format("Podcast %s episode %d of %d on %s by %s", this.getTitle(),
+                this.getEpisodeNumber(), this.getReleaseYear(), this.getTopic(), this.getHost());
     }
 }

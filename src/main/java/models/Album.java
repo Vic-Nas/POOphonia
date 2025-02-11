@@ -1,14 +1,17 @@
 package models;
 
+import java.util.Arrays;
+
 public class Album extends MusicItem {
 
     private int numberOfTracks;
     private String artist, label;
 
-    public Album(String artist, String label, int numberOfTracks) {
-        this.artist = artist;
-        this.label = label;
-        this.numberOfTracks = numberOfTracks;
+    public Album(String[] parts) {
+        this.setElements(Arrays.copyOfRange(parts, 0, 3));
+        this.artist = parts[3];
+        this.label = parts[4];
+        this.numberOfTracks = Integer.parseInt(parts[5]);
     }
 
     public int getNumberOfTracks() {
@@ -42,6 +45,7 @@ public class Album extends MusicItem {
 
     @Override
     public String toString() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return String.format("Album %s with %d by %s",
+                this.getTitle(), this.getNumberOfTracks(), this.getArtist());
     }
 }
