@@ -15,6 +15,24 @@ public class MusicLibrary {
         items.add(item);
     }
 
+    public MusicItem searchItem(int id) {
+        for (MusicItem item : items) {
+            if (item.getId() == id) {
+                return item;
+            }
+        }
+        return null;
+    }
+
+    public MusicItem searchItem(String title) {
+        for (MusicItem item : items) {
+            if (title.equals(item.getTitle())) {
+                return item;
+            }
+        }
+        return null;
+    }
+
     public void removeItem(MusicItem item) {
         items.remove(item);
     }
@@ -25,14 +43,9 @@ public class MusicLibrary {
         }
     }
 
-    public void playItem(int id) {
-        for (MusicItem item : items) {
-            if (item.getId() == id) {
-                item.play();
-                isPlaying = item;
-                break;
-            }
-        }
+    public void playItem(MusicItem item) {
+        item.play();
+        isPlaying = item;
     }
 
     public void pauseItem() {
@@ -50,6 +63,10 @@ public class MusicLibrary {
     }
 
     public void save(String string) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    void playItem(String playArg) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
