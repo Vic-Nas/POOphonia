@@ -1,6 +1,11 @@
 package services;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +35,11 @@ public class MusicLibraryFileHandler {
      * Default file path where the music library is stored.
      */
     private static final String DEFAULT_FILE = "POOphonia";
+    private static final String DEFAULT_COMMAND_FILE = "commands";
+
+    public static String getDefaultFile() {
+        return DEFAULT_FILE;
+    }
 
     /**
      * Save a list of MusicItem objects to a CSV file.
@@ -76,8 +86,8 @@ public class MusicLibraryFileHandler {
         // If the file does not exist, return an empty list and log a message
         if (!file.exists()) {
             if (libraryName == DEFAULT_FILE) {
-                Message.send("No default library " + libraryName + " found; Starting fresh."); 
-            }else {
+                Message.send("No default library " + libraryName + " found; Starting fresh.");
+            } else {
                 Message.send("No library " + libraryName + " found.");
             }
             return items;
@@ -99,5 +109,9 @@ public class MusicLibraryFileHandler {
             Message.send("Error loading library: " + e.getMessage());
         }
         return items;
+    }
+
+    public static String getDefaultCommandFile() {
+        return DEFAULT_COMMAND_FILE;
     }
 }

@@ -23,6 +23,7 @@ public class MusicLibrary {
 
     public void addItem(MusicItem item) {
         items.add(item);
+
     }
 
     public MusicItem searchItem(int id) {

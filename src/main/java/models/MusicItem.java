@@ -1,5 +1,7 @@
 package models;
 
+import ui.Message;
+
 public abstract class MusicItem {
 
     private int id, releaseYear;
@@ -17,6 +19,7 @@ public abstract class MusicItem {
     }
 
     public void stop() {
+        Message.send("Stopping " + this.info() + ".");
         this.isPlaying = false;
         this.isPaused = false;
     }
