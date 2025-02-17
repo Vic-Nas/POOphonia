@@ -84,12 +84,8 @@ public class MusicLibrary {
         isPlaying = null;
     }
 
-    public void save(String string) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    void playItem(String playArg) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void save(String fileName) {
+        MusicLibraryFileHandler.saveLibrary(this.items, fileName);
     }
 
 }

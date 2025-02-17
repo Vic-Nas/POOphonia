@@ -85,7 +85,7 @@ public class MusicLibraryFileHandler {
 
         // If the file does not exist, return an empty list and log a message
         if (!file.exists()) {
-            if (libraryName == DEFAULT_FILE) {
+            if (libraryName.equals(DEFAULT_FILE)) {
                 Message.send("No default library " + libraryName + " found; Starting fresh.");
             } else {
                 Message.send("No library " + libraryName + " found.");
@@ -96,7 +96,6 @@ public class MusicLibraryFileHandler {
         // Attempt to read the music library from the file
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
-            int id = 1;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(","); // Split CSV line into fields
                 MusicItem item = MusicItemFactory.createFromCSV(parts); // Convert CSV data to a MusicItem
