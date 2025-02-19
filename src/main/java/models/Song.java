@@ -15,7 +15,7 @@ public class Song extends MusicItem {
     }
 
     @Override
-    public String to_csv() {
+    public String toCSV() {
         return String.format("song,%d,%s,%d,%s,%s,%d", this.getId(), this.getTitle(),
                 this.getReleaseYear(), this.getArtist(), this.getGenre(), this.getDuration());
     }

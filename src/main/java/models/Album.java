@@ -39,7 +39,7 @@ public class Album extends MusicItem {
     }
 
     @Override
-    public String to_csv() {
+    public String toCSV() {
         return String.format("album,%d,%s,%d,%s,%s,%d", this.getId(), this.getTitle(),
                 this.getReleaseYear(), this.getArtist(), this.getLabel(), this.getNumberOfTracks());
     }

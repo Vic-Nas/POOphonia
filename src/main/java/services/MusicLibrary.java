@@ -10,6 +10,7 @@ import ui.Message;
 public class MusicLibrary {
 
     private ArrayList<MusicItem> items = new ArrayList<>();
+    private MusicItem searchedItem;
 
     public ArrayList<MusicItem> getItems() {
         return new ArrayList<>(items);
@@ -29,6 +30,7 @@ public class MusicLibrary {
     public MusicItem searchItem(int id) {
         for (MusicItem item : items) {
             if (item.getId() == id) {
+                this.searchedItem = item;
                 return item;
             }
         }
@@ -37,14 +39,14 @@ public class MusicLibrary {
 
     public MusicItem searchItem(String title, String artist) {
         for (MusicItem item : items) {
-            if (item instanceof Song) {
-                Song song = (Song) item;
+            if (item instanceof Song song) {
                 if (title.equals(song.getTitle()) && artist.equals(song.getArtist())) {
+                    this.searchedItem = song;
                     return song;
                 }
-            } else if (item instanceof Album) {
-                Album album = (Album) item;
+            } else if (item instanceof Album album) {
                 if (title.equals(album.getTitle()) && artist.equals(album.getArtist())) {
+                    this.searchedItem = album;
                     return album;
                 }
             }
@@ -58,7 +60,6 @@ public class MusicLibrary {
 
     public void listAllItems() {
         Message.send("Library:");
-        String part1, part2 = "";
         for (MusicItem item : items) {
             Message.send(item.toString());
 
@@ -86,6 +87,10 @@ public class MusicLibrary {
 
     public void save(String fileName) {
         MusicLibraryFileHandler.saveLibrary(this.items, fileName);
+    }
+
+    public MusicItem getSearchedItem() {
+        return searchedItem;
     }
 
 }

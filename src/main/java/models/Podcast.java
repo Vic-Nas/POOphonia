@@ -40,7 +40,7 @@ public class Podcast extends MusicItem {
     }
 
     @Override
-    public String to_csv() {
+    public String toCSV() {
         return String.format("podcast,%d,%s,%d,%s,%s,%d", this.getId(), this.getTitle(),
                 this.getReleaseYear(), this.getHost(), this.getTopic(), this.getEpisodeNumber());
     }

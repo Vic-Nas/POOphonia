@@ -27,11 +27,7 @@ public abstract class MusicItem {
     @Override
     public abstract String toString();
 
-    public abstract String to_csv();
-
-    public boolean toCSV() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+    public abstract String toCSV();
 
     public int getReleaseYear() {
         return releaseYear;

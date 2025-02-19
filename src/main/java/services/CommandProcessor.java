@@ -19,7 +19,6 @@ public class CommandProcessor {
     private static String sourcing;
 
     protected static MusicLibrary library;
-    private static MusicItem searchedItem;
 
     private static void add(String[] actionAndArgs) {
         MusicItem added = MusicItemFactory.createFromCSV(actionAndArgs[1].split(","));
@@ -27,6 +26,7 @@ public class CommandProcessor {
             library.addItem(added);
             Message.send(added.info() + " added to the library successfully.");
             MusicLibraryFileHandler.saveLibrary(library.getItems(), libraryFile);
+
         } else {
             Message.send("Invalid arguments for ADD.");
         }
@@ -82,8 +82,7 @@ public class CommandProcessor {
     }
 
     public static void processCommand(String command) {
-        if (command.isBlank() || !isComment(command)) {
-        } else {
+        if (!command.isBlank() && !isComment(command)) {
             String[] actionAndArgs = command.split(" ", 2);
             String action = actionAndArgs[0];
             switch (action) {
@@ -147,10 +146,10 @@ public class CommandProcessor {
                         }
                     } else {
                         if (library.getIsPlaying() == null) {
-                            if (searchedItem == null) {
+                            if (library.getSearchedItem() == null) {
                                 Message.send("Invalid PLAY command: " + String.join(" ", actionAndArgs));
                             } else {
-                                play(searchedItem);
+                                play(library.getSearchedItem());
                             }
                         } else {
                             Message.send(library.getIsPlaying().info() + "is already playing.");
@@ -191,31 +190,33 @@ public class CommandProcessor {
                 }
 
                 case "SEARCH" -> {
-                    if (library.getIsPlaying() == null) {
-                        if (actionAndArgs.length == 2) {
-                            String[] searchArgs = actionAndArgs[1].split(" by ");
-                            if (searchArgs.length == 2) {
-                                searchedItem = library.searchItem(searchArgs[0], searchArgs[1]);
-                            } else {
-                                try {
-                                    int id = Integer.parseInt(actionAndArgs[1]);
-                                    searchedItem = library.searchItem(id);
-                                } catch (NumberFormatException e) {
-                                    Message.send("Invalid SEARCH format. Use 'SEARCH <id>' or 'SEARCH <title> by <artist>.'");
-                                    return;
-                                }
+                    MusicItem searchedItem = library.getSearchedItem();
+                    if (actionAndArgs.length == 2) {
+                        String[] searchArgs = actionAndArgs[1].split(" by ");
+                        if (searchArgs.length == 2) {
+                            searchedItem = library.searchItem(searchArgs[0], searchArgs[1]);
+                        } else {
+                            try {
+                                int id = Integer.parseInt(actionAndArgs[1]);
+                                searchedItem = library.searchItem(id);
+                            } catch (NumberFormatException e) {
+                                Message.send("Invalid SEARCH format. Use 'SEARCH <id>' or 'SEARCH <title> by <artist>.'");
+                                return;
                             }
+                        }
 
-                            if (searchedItem != null) {
+                        if (searchedItem != null) {
+                            if (library.getIsPlaying() == null) {
                                 Message.send(searchedItem.info() + " is ready to PLAY.");
                             } else {
-                                Message.send("SEARCH " + actionAndArgs[1] + " failed; no item found.");
+                                Message.send(searchedItem.toString());
                             }
+
                         } else {
-                            Message.send("Invalid SEARCH command: " + String.join(" ", actionAndArgs) + ".");
+                            Message.send("SEARCH " + actionAndArgs[1] + " failed; no item found.");
                         }
                     } else {
-                        Message.send(library.getIsPlaying().toString());
+                        Message.send("Invalid SEARCH command: " + String.join(" ", actionAndArgs) + ".");
                     }
                 }
 
