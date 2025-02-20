@@ -48,19 +48,11 @@ public class CommandProcessor {
 
     private static void play(MusicItem item) {
         if (library.getIsPlaying() != null) {
-            stop();
+            library.stopItem();
         }
 
         library.playItem(item);
         Message.send("Playing " + item.info() + ".");
-    }
-
-    private static void stop() {
-        if (library.getIsPlaying() != null) {
-            library.stopItem();
-        } else {
-            Message.send("No item is currently playing.");
-        }
     }
 
     private static void source(String commandFileName) {
@@ -122,6 +114,7 @@ public class CommandProcessor {
                     }
                 }
                 case "PLAY" -> {
+
                     if (actionAndArgs.length == 2) {
                         String[] playArgs = actionAndArgs[1].split(" by ");
                         if (playArgs.length == 2) {
@@ -129,6 +122,7 @@ public class CommandProcessor {
                             if (item == null) {
                                 Message.send("PLAY item: " + actionAndArgs[1] + " failed; no such item.");
                             } else {
+                                System.out.println("Here we are - " + command);
                                 play(item);
                             }
                         } else {
@@ -232,7 +226,7 @@ public class CommandProcessor {
                     break;
                 }
                 case "STOP" ->
-                    stop();
+                    library.stopItem();
                 default ->
                     Message.send("Unknown operation.");
             }
