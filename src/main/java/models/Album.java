@@ -8,7 +8,7 @@ public class Album extends MusicItem {
     private String artist, label;
 
     public Album(String[] parts) {
-        this.setElements(Arrays.copyOfRange(parts, 0, 3));
+        this.setCommons(Arrays.copyOfRange(parts, 0, 3));
         this.artist = parts[3];
         this.label = parts[4];
         this.numberOfTracks = Integer.parseInt(parts[5]);
@@ -52,11 +52,6 @@ public class Album extends MusicItem {
 
     @Override
     public String toString() {
-        String part1, part2 = "";
-
-        part1 = String.format("ALbum [ID=%d, Title=%s, Release Year=%d, ",
-                this.getId(), this.getTitle(), this.getReleaseYear());
-
         return String.format("Album [ID=%d, Title=%s, Release Year=%d, Artist=%s, Tracks=%d, Label=%s]",
                 this.getId(), this.getTitle(), this.getReleaseYear(), this.getArtist(), this.getNumberOfTracks(), this.getLabel());
 

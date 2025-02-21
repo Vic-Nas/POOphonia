@@ -41,18 +41,15 @@ public class MusicItemFactory {
         //   MusicItem type is in parts[0]
         String firstPart = parts[0].toLowerCase();
         parts = Arrays.copyOfRange(parts, 1, 7);
-        switch (firstPart) {
-            case "song":
-                return new Song(parts);
-
-            case "album":
-                return new Album(parts);
-
-            case "podcast":
-                return new Podcast(parts);
-
-            default:
-                return null;
-        }
+        return switch (firstPart) {
+            case "song" ->
+                new Song(parts);
+            case "album" ->
+                new Album(parts);
+            case "podcast" ->
+                new Podcast(parts);
+            default ->
+                null;
+        };
     }
 }

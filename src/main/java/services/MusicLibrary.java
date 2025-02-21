@@ -39,16 +39,12 @@ public class MusicLibrary {
 
     public MusicItem searchItem(String title, String artist) {
         for (MusicItem item : items) {
-            if (item instanceof Song song) {
-                if (title.equals(song.getTitle()) && artist.equals(song.getArtist())) {
-                    this.searchedItem = song;
-                    return song;
-                }
-            } else if (item instanceof Album album) {
-                if (title.equals(album.getTitle()) && artist.equals(album.getArtist())) {
-                    this.searchedItem = album;
-                    return album;
-                }
+            if (item instanceof Song song && title.equals(song.getTitle()) && artist.equals(song.getArtist())) {
+                this.searchedItem = song;
+                return song;
+            } else if (item instanceof Album album && title.equals(album.getTitle()) && artist.equals(album.getArtist())) {
+                this.searchedItem = album;
+                return album;
             }
         }
         return null;

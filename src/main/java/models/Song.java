@@ -8,7 +8,7 @@ public class Song extends MusicItem {
     private String artist, genre;
 
     public Song(String[] parts) {
-        this.setElements(Arrays.copyOfRange(parts, 0, 3));
+        this.setCommons(Arrays.copyOfRange(parts, 0, 3));
         this.artist = parts[3];
         this.duration = Integer.parseInt(parts[5]);
         this.genre = parts[4];
@@ -52,7 +52,7 @@ public class Song extends MusicItem {
 
     @Override
     public String toString() {
-        return String.format("Song [ID=%d, Title=%s, Release Year=%d, Artist=%s, Duration=%d, Genre=%s]",
-                this.getId(), this.getTitle(), this.getReleaseYear(), this.getArtist(), this.getDuration(), this.getGenre());
+        return String.format("Song [ID=%d, Title=%s, Release Year=%d, Artist=%s, Genre=%s, Duration=%ds]",
+                this.getId(), this.getTitle(), this.getReleaseYear(), this.getArtist(), this.getGenre(), this.getDuration());
     }
 }

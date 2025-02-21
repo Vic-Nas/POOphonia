@@ -33,10 +33,7 @@ public abstract class MusicItem {
         return releaseYear;
     }
 
-    // public void setReleaseYear(int releaseYear) {
-    //     this.releaseYear = releaseYear;
-    // }
-    protected void setElements(String[] parts) {
+    protected void setCommons(String[] parts) {
         this.id = Integer.parseInt(parts[0]);
         this.title = parts[1];
         this.releaseYear = Integer.parseInt(parts[2]);
@@ -46,23 +43,14 @@ public abstract class MusicItem {
         return id;
     }
 
-    // public void setId(int id) {
-    //     this.id = id;
-    // }
     public String getTitle() {
         return title;
     }
 
-    // public void setTitle(String title) {
-    //     this.title = title;
-    // }
     public boolean isPlaying() {
         return isPlaying;
     }
 
-    // public void setIsPlaying(boolean isPlaying) {
-    //     this.isPlaying = isPlaying;
-    // }
     public abstract String info();
 
     public boolean isPaused() {

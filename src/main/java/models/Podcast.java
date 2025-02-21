@@ -8,7 +8,7 @@ public class Podcast extends MusicItem {
     private String host, topic;
 
     public Podcast(String[] parts) {
-        this.setElements(Arrays.copyOfRange(parts, 0, 3));
+        this.setCommons(Arrays.copyOfRange(parts, 0, 3));
         this.host = parts[3];
         this.topic = parts[4];
         this.episodeNumber = Integer.parseInt(parts[5]);
