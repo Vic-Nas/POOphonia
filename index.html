@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POOphonia - Guide des Commandes</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        header {
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+        h2 {
+            color: #2575fc;
+            border-bottom: 2px solid #6a11cb;
+            padding-bottom: 0.5rem;
+            margin-top: 2rem;
+        }
+        .command-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        .command-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .command-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        .command-name {
+            background-color: #f0f7ff;
+            color: #2575fc;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            padding: 8px 12px;
+            border-radius: 5px;
+            display: inline-block;
+            margin-bottom: 1rem;
+            border-left: 3px solid #6a11cb;
+        }
+        .command-description {
+            margin-bottom: 1rem;
+        }
+        .situation-container {
+            margin-top: 1rem;
+            border-top: 1px solid #eee;
+            padding-top: 1rem;
+        }
+        .situation {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 0.5rem;
+        }
+        .situation-title {
+            font-weight: bold;
+            color: #6a11cb;
+            margin-bottom: 5px;
+        }
+        .output {
+            font-family: 'Courier New', monospace;
+            background-color: #f0f7ff;
+            padding: 8px;
+            border-radius: 4px;
+            color: #2c3e50;
+            border-left: 3px solid #2575fc;
+        }
+        .intro {
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 1rem;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🎵 POOphonia - Guide des Commandes</h1>
+        <p>Documentation complète des commandes et leurs outputs pour la gestion de bibliothèque musicale</p>
+    </header>
+
+    <div class="intro">
+        <h2>Introduction</h2>
+        <p>POOphonia est un système de gestion de bibliothèque musicale en Java qui permet aux utilisateurs de gérer une collection d'éléments de musique (chansons, albums et podcasts). Ce guide détaille toutes les commandes disponibles, leurs fonctionnements et leurs outputs possibles.</p>
+    </div>
+
+    <div class="command-container">
+        <!-- SOURCE -->
+        <div class="command-card">
+            <div class="command-name">SOURCE | SOURCE &lt;file&gt;</div>
+            <div class="command-description">
+                Exécute les commandes du fichier de commandes par défaut (commands.txt) ou du fichier passé en argument. Au lancement de POOphonia, le fichier de commandes par défaut est lu automatiquement.
+            </div>
+            <div class="situation-container">
+                <div class="situation">
+                    <div class="situation-title">Le fichier de commandes est déjà en cours de traitement (boucle infinie évitée)</div>
+                    <div class="output">Currently sourcing &lt;filename&gt;; SOURCE ignored.</div>
+                </div>
+                <div class="situation">
+                    <div class="situation-title">Le fichier de commandes spécifié n'existe pas</div>
+                    <div class="output">Sourcing &lt;filename&gt; failed; file not found.</div>
+                </div>
+                <div class="situation">
+                    <div class="situation-title">Un fichier de commandes valide commence son traitement</div>
+                    <div class="output">Sourcing &lt;filename&gt;...</div>
+                </div>
+                <div class="situation">
+                    <div class="situation-title">Une erreur survient pendant la lecture du fichier de commandes</div>
+                    <div class="output">Error reading command file: &lt;filename&gt;</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- LOAD -->
+        <div class="command-card">
+            <div class="command-name">LOAD | LOAD &lt;lib&gt;</div>
+            <div class="command-description">
+                Charge les éléments musicaux de la librairie par défaut, ou provenant du fichier &lt;lib&gt; lorsque fourni.
+            </div>
+            <div class="situation-container">
+                <div class="situation">
+                    <div class="situation-title">La commande LOAD s'exécute sans spécifier de fichier</div>
+                    <div class="output">Loading from default library file.</div>
+                </div>
+                <div class="situation">
+                    <div class="situation-title">La commande LOAD s'exécute avec un fichier spécifié</div>
+                    <div class="output">Loading from file: &lt;filename&gt;</div>
+                </div>
+                <div class="situation">
+                    <div class="situation-title">La librairie est chargée avec succès</div>
+                    <div class="output">Library in file &lt;filename&gt; loaded successfully.</div>
+                </div>
+                <div class="situation">
+                    <div class="situation-title">Erreur lors du chargement de la librairie</div>
+                    <div class="output">(Géré par MusicLibraryFileHandler)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SAVE -->
+        <div class="command-card">
+            <div class="command-name">SAVE | SAVE &lt;file&gt;</div>
+            <div class="command-description">
+                Sauve la librairie sur le fichier par défaut, ou dans le fichier &lt;file&gt; lorsque fourni. À la fin d'exécution de POOphonia, la librairie est automatiquement sauvée dans le fichier par défaut.
+            </div>
+            <div class="situation-container">
+                <div class="situation">
+                    <div class="situation-title">La commande SAVE s'exécute sans spécifier de fichier</div>
+                    <div class="output">Saving to default library file.</div>
+                </div>
+                <div class="situation">
+                    <div class="situation-title">La commande SAVE s'exécute avec un fichier spécifié</div>
+                    <div class="output">Saving to file: &lt;filename&gt;</div>
+                </div>
+                <div class="situation">
+                    <div class="situation-title">La librairie est sauvegardée avec succès</div>
+                    <div class="output">Library saved successfully to &lt;filename&gt;.</div>
+                </div>
+                <div class="situation">
+                    <div class="situation-title">Erreur lors de la sauvegarde de la librairie</div>
+                    <div class="output">(Géré par MusicLibraryFileHandler)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ADD -->
+        <div class="command-card">
+            <div class="command-name">ADD &lt;item&gt;</div>
+            <div class="command-description">
+                Charge l'item (Song, Album ou Podcast) dans la librairie si toutes les parties sont valides et sauve la librairie par défaut.
+            </div>
+            <div class="situation-container">
+                <div class="situation">
+                    <div class="situation-title">La commande ADD a des paramètres manquants</div>
+                    <div class="output">Invalid ADD command: &lt;commandLine&gt;</div>
+                </div>
+                <div class="situation">
+                    <div class="situation-title">La commande ADD a un nombre incorrect d'éléments</div>
+                    <div class="output">Wrong number of elements: &lt;commandLine&gt;</div>
+                </div>
+                <div class="situation">
+                    <div class="situation-title">Le type d'élément musical est invalide (pas "song", "album", ou "podcast")</div>
+                    <div class="output">Wrong music item: &lt;commandLine&gt;</div>
+                </div>
+                <div class="situation">
+                    <div class="situation-title">L'ID n'est pas un nombre valide ou est inférieur à 1</div>
+                    <div class="output">Invalid music ID: &lt;commandLine&gt;</div>
+                </div>
+                <div class="situation">
+                    <div class="situation-title">L'année de sortie est mal formatée ou hors d'une plage raisonnable</div>
+                    <div class="output">Invalid release year: &lt;commandLine&gt;</div>
+                </div>
+                <div class="situation">
+                    <div class="situation-title">La durée (pour les chansons) est négative ou plus longue que 10 heures</div>
+                    <div class="output">Invalid duration: &lt;commandLine&gt;</div>
+                </div>
+                <div class="situation">
+                    <div class="situation-title">Le nombre de pistes (pour les albums) est inférieur à 1 ou supérieur à 100</div>
+                    <div class="output">Invalid number of tracks: &lt;commandLine&gt;</div>
+                </div>
+                <div class="situation">
+                    <div class="situation-title">Le numéro d'épisode (pour les podcasts) est inférieur à 1 ou supérieur à 500</div>
+                    <div class="output">Invalid episode number: &lt;commandLine&gt;</div>
+                </div>
+                <div class="situation">
+                    <div class="situation-title">La création de l'élément a échoué</div>
+                    <div class="output">ADD item &lt;itemData&gt; failed; no such item.</div>
+                </div>
+                <div class="situation">
+                    <div class="situation-title">L'ID fourni est déjà utilisé par un autre élément</div>
+                    <div class="output">ADD &lt;item&gt; failed; ID already used.</div>
+                </div>
+                <div class="situation">
+                    <div class="situation-title">L'élément est déjà dans la bibliothèque (même titre, artiste, etc.)</div>
+                    <div class="output">ADD &lt;item&gt; failed; item already in library.</div>
+                </div>
+                <div class="situation">
+                    <div class="situation-title">L'élément est ajouté avec succès à la bibliothèque</div>
+                    <div class="output">&lt;item_info&gt; added to the library successfully.</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- REMOVE -->
+        <div class="command-card">
+            <div class="command-name">REMOVE &lt;id&gt;</div>
+            <div class="command-description">
+                Retire l'élément musical (Song, Album ou Podcast) avec l'ID &lt;id&gt; de la librairie et sauve la librairie par défaut.
+            </div>
+            <div class="situation-container">
+                <div class="situation">
+                    <div class="situation-title">La commande REMOVE manque un paramètre ID</div>
+                    <div class="output">Invalid REMOVE command: &lt;commandLine&gt;</div>
+                </div>
+                <div class="situation">
+                    <div class="situation-title">L'ID n'est pas un nombre valide</div>
+                    <div class="output">Invalid ID for REMOVE command: &lt;idStr&gt;</div>
+                </div>
+                <div class="situation">
+                    <div class="situation-title">L'élément avec l'ID spécifié n'existe pas</div>
+                    <div class="output">No item found with ID: &lt;id&gt;</div>
+                </div>
+                <div class="situation">
+                    <div class="situation-title">L'ID spécifié ne correspond à aucun élément dans la bibliothèque</div>
+                    <div class="output">REMOVE item &lt;id&gt; failed; no such item.</div>
+                </div>
+                <div class="situation">
+                    <div class="situation-title">L'élément est retiré avec succès de la bibliothèque</div>
+                    <div class="output">Removed &lt;item_info&gt; successfully.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEARCH -->
+        <div class="command-card">
+            <div class="command-name">SEARCH &lt;id&gt; | SEARCH &lt;title&gt; by &lt;artist&gt;</div>
+            <div class="command-description">
+                Trouve et prépare un élément de musique avec l'id &lt;id&gt; OU correspondant à un titre et artiste. Les informations de l'élément trouvé sont affichées. Si aucun élément n'est en train de jouer, la commande met l'élément trouvé comme prochain à jouer.
+            </div>
+            <div class="situation-container">
+                <div class="situation">
+                    <div class="situation-title">La commande SEARCH manque des paramètres</div>
+                    <div class="output">Invalid SEARCH command: &lt;commandLine&gt;</div>
+                </div>
+                <div class="situation">
+                    <div class="situation-title">L'ID est invalide ou l'élément n'est pas trouvé</div>
+                    <div class="output">SEARCH item ID &lt;id&gt; failed; no such item</div>
+                </div>
+                <div class="situation">
+                    <div class="situation-title">La combinaison titre et artiste est invalide ou non trouvée</div>
+                    <div class="output">SEARCH &lt;title&gt; by &lt;artist&gt; failed; no item found.</div>
+                </div>
+                <div class="situation">
+                    <div class="situation-title">Le format de recherche est incorrect</div>
+                    <div class="output">Invalid SEARCH format. Use 'SEARCH &lt;id&gt;' or 'SEARCH &lt;title&gt; by &lt;artist&gt;'</div>
+                </div>
+                <div class="situation">
+                    <div class="situation-title">Aucun élément n'est en cours de lecture (prépare le suivant)</div>
+                    <div class="output">&lt;item_info&gt; is ready to PLAY.</div>
+                </div>
+                <div class="situation">
+                    <div class="situation-title">Un autre élément est déjà en cours de lecture</div>
+                    <div class="output">&lt;item.toString()&gt;</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PLAY -->
+        <div class="command-card">
+            <div class="command-name">PLAY | PLAY &lt;id&gt; | PLAY &lt;title&gt; by &lt;artist&gt;</div>
+            <div class="command-description">
+                Lance/joue le prochain élément musical OU l'élément musical avec l'ID &lt;id&gt; OU l'élément musical avec titre &lt;title&gt; et artiste &lt;artist&gt;. Si un autre élément musical est en train de jouer, il est arrêté avant que le nouvel élément soit lancé.
+            </div>
+            <div class="situation-container">
+                <div class="situation">
+                    <div class="situation-title">La commande PLAY lance le dernier élément recherché si aucun n'est en cours de lecture</div>
+                    <div class="output">Playing &lt;item_info&gt;.</div>
+                </div>
+                <div class="situation">
+                    <div class="situation-title">Un élément est déjà en cours de lecture</div>
+                    <div class="output">&lt;item_info&gt; is already playing.</div>
+                </div>
+                <div class="situation">
+                    <div class="situation-title">La commande PLAY manque des paramètres</div>
+                    <div class="output">Invalid PLAY command: &lt;commandLine&gt;</div>
+                </div>
+                <div class="situation">
+                    <div class="situation-title">L'ID est invalide ou l'élément n'existe pas</div>
+                    <div class="output">Invalid ID for PLAY command: &lt;idStr&gt;</div>
+                </div>
+                <div class="situation">
+                    <div class="situation-title">La combinaison titre et artiste ne correspond à aucun élément</div>
+                    <div class="output">PLAY item: &lt;title&gt; by &lt;artist&gt; failed; no such item.</div>
+                </div>
+                <div class="situation">
+                    <div class="situation-title">Le format de la commande est incorrect</div>
+                    <div class="output">Invalid PLAY format. Use 'PLAY', 'PLAY &lt;id&gt;' or 'PLAY &lt;title&gt; by &lt;artist&gt;'</div>
+                </div>
+                <div class="situation">
+                    <div class="situation-title">L'ID demandé n'existe pas</div>
+                    <div class="output">PLAY item ID &lt;id&gt; failed; no such item.</div>
+                </div>
+                <div class="situation">
+                    <div class="situation-title">L'élément demandé ou un autre est déjà en cours de lecture</div>
+                    <div class="output">&lt;item_info&gt; is already playing.</div>
+                </div>
+                <div class="situation">
+                    <div class="situation-title">Un nouvel élément commence à être joué</div>
+                    <div class="output">Playing &lt;item_info&gt;.</div>
+                </div>
+                <div class="situation">
+                    <div class="situation-title">Il n'y a pas d'élément à jouer lors de l'appel de playItem() sans argument</div>
+                    <div class="output">No item to PLAY.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAUSE -->
+        <div class="command-card">
+            <div class="command-name">PAUSE</div>
+            <div class="command-description">
+                Met sur pause l'élément musical qui était en train de jouer.
+            </div>
+            <div class="situation-container">
+                <div class="situation">
+                    <div class="situation-title">La commande PAUSE a des paramètres supplémentaires</div>
+                    <div class="output">Invalid PAUSE command: &lt;commandLine&gt;</div>
+                </div>
+                <div class="situation">
+                    <div class="situation-title">Il n'y a pas d'élément en cours de lecture</div>
+                    <div class="output">No item to PAUSE.</div>
+                </div>
+                <div class="situation">
+                    <div class="situation-title">L'élément est déjà en pause</div>
+                    <div class="output">&lt;item_info&gt;; is already on pause.</div>
+                </div>
+                <div class="situation">
+                    <div class="situation-title">L'élément en cours de lecture est mis en pause avec succès</div>
+                    <div class="output">Pausing &lt;item_info&gt;.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STOP -->
+        <div class="command-card">
+            <div class="command-name">STOP</div>
+            <div class="command-description">
+                Arrête l'élément musical qui était en train de jouer.
+            </div>
+            <div class="situation-container">
+                <div class="situation">
+                    <div class="situation-title">La commande STOP a des paramètres supplémentaires</div>
+                    <div class="output">Invalid STOP command: &lt;commandLine&gt;</div>
+                </div>
+                <div class="situation">
+                    <div class="situation-title">Il n'y a pas d'élément en cours de lecture</div>
+                    <div class="output">No item to STOP.</div>
+                </div>
+                <div class="situation">
+                    <div class="situation-title">L'élément en cours de lecture est arrêté avec succès</div>
+                    <div class="output">Stopping &lt;item_info&gt;.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- LIST -->
+        <div class="command-card">
+            <div class="command-name">LIST</div>
+            <div class="command-description">
+                Énumère les éléments musicaux de la librairie.
+            </div>
+            <div class="situation-container">
+                <div class="situation">
+                    <div class="situation-title">La commande LIST a des paramètres supplémentaires</div>
+                    <div class="output">Invalid LIST command: &lt;commandLine&gt;</div>
+                </div>
+                <div class="situation">
+                    <div class="situation-title">La bibliothèque est vide</div>
+                    <div class="output">The library is empty.</div>
+                </div>
+                <div class="situation">
+                    <div class="situation-title">La bibliothèque contient des éléments (en-tête)</div>
+                    <div class="output">Library:</div>
+                </div>
+                <div class="situation">
+                    <div class="situation-title">La bibliothèque est vide (autre message possible)</div>
+                    <div class="output">Music library is empty.</div>
+                </div>
+                <div class="situation">
+                    <div class="situation-title">La bibliothèque contient des éléments (affichage des éléments)</div>
+                    <div class="output">&lt;item.toString()&gt; (pour chaque élément dans la bibliothèque)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CLEAR -->
+        <div class="command-card">
+            <div class="command-name">CLEAR</div>
+            <div class="command-description">
+                Retire tous les éléments musicaux de la librairie et sauve la librairie par défaut.
+            </div>
+            <div class="situation-container">
+                <div class="situation">
+                    <div class="situation-title">La commande CLEAR a des paramètres supplémentaires</div>
+                    <div class="output">Invalid CLEAR command: &lt;commandLine&gt;</div>
+                </div>
+                <div class="situation">
+                    <div class="situation-title">La bibliothèque est déjà vide</div>
+                    <div class="output">Music library is already empty.</div>
+                </div>
+                <div class="situation">
+                    <div class="situation-title">La bibliothèque est vidée avec succès</div>
+                    <div class="output">Music library has been cleared successfully.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- EXIT -->
+        <div class="command-card">
+            <div class="command-name">EXIT</div>
+            <div class="command-description">
+                Termine l'exécution du programme en sauvegardant automatiquement la bibliothèque.
+            </div>
+            <div class="situation-container">
+                <div class="situation">
+                    <div class="situation-title">La commande EXIT a des paramètres supplémentaires</div>
+                    <div class="output">Invalid EXIT command: &lt;commandLine&gt;</div>
+                </div>
+                <div class="situation">
+                    <div class="situation-title">La commande EXIT arrête l'exécution</div>
+                    <div class="output">Exiting program...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Invalid commands -->
+        <div class="command-card">
+            <div class="command-name">Commandes invalides</div>
+            <div class="command-description">
+                Gestion des commandes inconnues ou mal formatées.
+            </div>
+            <div class="situation-container">
+                <div class="situation">
+                    <div class="situation-title">Une commande inconnue est entrée</div>
+                    <div class="output">Unknown command: &lt;commandLine&gt;</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>🎵 POOphonia - Système de gestion de bibliothèque musicale | Travail Pratique 1 - IFT1025</p>
+    </footer>
+</body>
+</html>
