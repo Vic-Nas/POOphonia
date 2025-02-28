@@ -1,10 +1,44 @@
 package models;
 
+import java.util.ArrayList;
+
 import ui.Message;
 
 public abstract class MusicItem {
 
+    public static final int BAD_INT_VALUE = -1;
     private int id, releaseYear;
+    protected ArrayList<String> invalidFields = new ArrayList<>();
+
+
+    public ArrayList<String> getInvalidFields() {
+        return new ArrayList<>(invalidFields);
+    }
+
+    public void setId(int id) {
+        if (id >= 1) {
+            this.id = id;
+            invalidFields.remove("ID");
+        } else {
+            invalidFields.add("ID");
+        }
+    }
+
+    public void setReleaseYear(int releaseYear) {
+        if (releaseYear >= 1825 && releaseYear <= 2025) {
+            this.releaseYear = releaseYear;
+            invalidFields.remove("release year");
+        } else {
+            invalidFields.add("release year");
+        }
+    }
+
+    public void setTitle(String title) {
+        if (title.strip().length() != 0){this.title = title;}
+        else{invalidFields.add("title");}
+        
+    }
+
     private String title;
     private boolean isPlaying;
     private boolean isPaused;
@@ -31,12 +65,6 @@ public abstract class MusicItem {
 
     public int getReleaseYear() {
         return releaseYear;
-    }
-
-    protected void setCommons(String[] parts) {
-        this.id = Integer.parseInt(parts[0]);
-        this.title = parts[1];
-        this.releaseYear = Integer.parseInt(parts[2]);
     }
 
     public int getId() {

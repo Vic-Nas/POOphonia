@@ -46,12 +46,19 @@ public class CommandProcessor {
                 Message.send("Sourcing " + commandFileName + "...");
                 sourcing = commandFileName; // Sets the sourcing variable to the current file name
                 String line;
+                int lineNumber = 0;
                 // Read the file line by line
                 while ((line = reader.readLine()) != null) {
+                    lineNumber ++;
                     if (line.strip().equals("EXIT")) {
                         break;
                     }
-                    processCommand(line);
+                    try{
+                        processCommand(line);
+                    }catch(Exception e){
+                        Message.send("Error at command line " + lineNumber + ": " + line + "\n\t\t\t" + e.toString());
+                    }
+                    
                 }
                 sourcing = null; // Resets the sourcing variable after processing the file
             } catch (IOException e) {
@@ -71,17 +78,24 @@ public class CommandProcessor {
             switch (action) {
                 case "ADD" -> {
                     if (actionAndArgs.length == 2) {
-                        MusicItem added = MusicItemFactory.createFromCSV(actionAndArgs[1].split(",")); // Creates a MusicItem from the CSV string
-                        if (added != null) {
+                        String[] typeAndParts = actionAndArgs[1].split(",");
+                        if (typeAndParts.length != 7){
+                            Message.send("Wrong number of elements: " + command);
+                            break;
+                        }
+                        MusicItem added = MusicItemFactory.createFromCSV(typeAndParts);
+                        if (added != null && added.getInvalidFields().isEmpty()) {
                             library.addItem(added); // Adds the item to the library
-                            Message.send(added.info() + " added to the library successfully."); // Sends a success message
-                            MusicLibraryFileHandler.saveLibrary(library.getItems(), libraryFile); // Saves the updated library to the file
+                            Message.send(added.info() + " added to the library successfully.");
+                            MusicLibraryFileHandler.saveLibrary(library.getItems(), libraryFile);
 
+                        } else if (added != null && !added.getInvalidFields().isEmpty()) {
+                            Message.send("Invalid " + String.join(",", added.getInvalidFields()) + ": " + command);
                         } else {
-                            Message.send("Invalid arguments for ADD."); // Sends an error message if the arguments are invalid
+                            Message.send("Wrong music item: " + command);
                         }
                     } else {
-                        Message.send("Invalid arguments for ADD."); // Sends an error message if the arguments are invalid
+                        Message.send("Invalid ADD command: " + command);
                     }
                 }
                 case "CLEAR" -> {
@@ -95,11 +109,18 @@ public class CommandProcessor {
                     library.listAllItems();
                 case "LOAD" -> {
                     switch (actionAndArgs.length) {
-                        case 1 -> // If no file name is provided, load from the default file
-                            MusicLibraryFileHandler.loadLibrary(libraryFile);
-                        case 2 -> { // If a file name is provided, load from that file
-                            MusicLibraryFileHandler.loadLibrary(actionAndArgs[1]);
-                            libraryFile = actionAndArgs[1]; // Updates the library file name
+                        case 1 -> {// If no file name is provided, load from the default file
+                            Message.send("Loading from default library file.");
+                            library.setItems(MusicLibraryFileHandler.loadLibrary(libraryFile));}
+                        case 2 -> {
+                            MusicLibrary temp = new MusicLibrary();
+                            String fileName = actionAndArgs[1];
+                            Message.send("Loading from file: " + actionAndArgs[1]);
+                            temp.setItems(MusicLibraryFileHandler.loadLibrary(fileName));
+                            if (!temp.getItems().isEmpty()){
+                                libraryFile = fileName; // Updates the library file name
+                                library = temp;
+                            }
                         }
                         default ->
                             Message.send("Invalid arguments for LOAD.");
@@ -148,12 +169,12 @@ public class CommandProcessor {
                         // If no arguments are provided, play the searched item or send an error message
                         if (library.getIsPlaying() == null) {
                             if (library.getSearchedItem() == null) {
-                                Message.send("Invalid PLAY command: " + String.join(" ", actionAndArgs)); // Sends an error message if no item is searched
+                                Message.send("Invalid PLAY command: " + String.join(" ", actionAndArgs));
                             } else {
                                 play(library.getSearchedItem());
                             }
                         } else {
-                            Message.send(library.getIsPlaying().info() + "is already playing.");
+                            Message.send(library.getIsPlaying().info() + " is already playing.");
                         }
                     }
                 }
@@ -182,13 +203,15 @@ public class CommandProcessor {
                 case "SAVE" -> { // Case for saving the music library to a file
                     // Switch statement to handle different numbers of arguments
                     switch (actionAndArgs.length) {
-                        case 1 -> // If no file name is provided, save to the default file
-                            MusicLibraryFileHandler.saveLibrary(library.getItems(), libraryFile); // Saves the library to the default file
+                        case 1 -> {// If no file name is provided, save to the default file
+                            Message.send("Saving to default library file.");
+                            MusicLibraryFileHandler.saveLibrary(library.getItems(), libraryFile); }
                         case 2 -> { // If a file name is provided, save to that file
+                            Message.send("Saving to file: " + actionAndArgs[1]);
                             MusicLibraryFileHandler.saveLibrary(library.getItems(), actionAndArgs[1]); // Saves the library to the specified file
                         }
                         default -> // If the number of arguments is invalid, send an error message
-                            Message.send("Invalid arguments for SAVE."); // Sends an error message
+                            Message.send("Invalid arguments for SAVE.");
                     }
                 }
 
@@ -221,7 +244,7 @@ public class CommandProcessor {
                             }
 
                         } else if (id != -1) {
-                            Message.send("SEARCH item " + id + " failed; no such item."); // Item is not found by ID
+                            Message.send("SEARCH item ID " + id + " failed; no such item."); // Item is not found by ID
                         } else {
                             Message.send("SEARCH " + actionAndArgs[1] + " failed; no item found."); // Item is not found by title and artist
                         }
@@ -240,10 +263,15 @@ public class CommandProcessor {
                             Message.send("Invalid arguments for SOURCE.");
                     }
                 }
-                case "STOP" ->
+                case "STOP" ->{
+                    if (library.getIsPlaying() != null){
+                        Message.send("No item to STOP.");
+                    }else{
                     library.stopItem();
+                }
+                }
                 default ->
-                    Message.send("Unknown operation."); // Sends an error message
+                    Message.send("Unknown operation.");
             }
         }
     }

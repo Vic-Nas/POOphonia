@@ -1,26 +1,42 @@
 package models;
 
-import java.util.Arrays;
-
-public class Podcast extends MusicItem {
+public final class Podcast extends MusicItem {
 
     private int episodeNumber;
     private String host, topic;
 
     public Podcast(String[] parts) {
-        this.setCommons(Arrays.copyOfRange(parts, 0, 3));
+        try {
+            this.setId(Integer.parseInt(parts[0]));
+        } catch (NumberFormatException e) {
+            this.setId(-1);
+        }
+        this.setTitle(parts[1]);
+        try {
+            this.setReleaseYear(Integer.parseInt(parts[2]));
+        } catch (NumberFormatException e) {
+            this.setReleaseYear(-1);
+        }
         this.host = parts[3];
         this.topic = parts[4];
-        this.episodeNumber = Integer.parseInt(parts[5]);
-
+        try {
+            this.setEpisodeNumber(Integer.parseInt(parts[5]));
+        } catch (NumberFormatException e) {
+            this.setEpisodeNumber(-1);
+        }
     }
 
     public int getEpisodeNumber() {
         return episodeNumber;
     }
 
-    public void setEpisodeNumber(int episodeNumber) {
-        this.episodeNumber = episodeNumber;
+    private void setEpisodeNumber(int episodeNumber) {
+        if (episodeNumber >= 1 && episodeNumber <= 500) {
+            this.episodeNumber = episodeNumber;
+            invalidFields.remove("episode number");
+        } else {
+            invalidFields.add("episode number");
+        }
     }
 
     public String getHost() {
@@ -28,7 +44,9 @@ public class Podcast extends MusicItem {
     }
 
     public void setHost(String host) {
-        this.host = host;
+        if (host.strip().length() != 0){this.host = host;
+            invalidFields.remove("host");}
+        else{invalidFields.add("host");}
     }
 
     public String getTopic() {
@@ -36,7 +54,8 @@ public class Podcast extends MusicItem {
     }
 
     public void setTopic(String topic) {
-        this.topic = topic;
+        if (topic.strip().length() != 0){this.topic = topic;invalidFields.remove("topic");}
+        else{invalidFields.add("topic");}
     }
 
     @Override
@@ -53,7 +72,9 @@ public class Podcast extends MusicItem {
 
     @Override
     public String toString() {
-        return String.format("Podcast [ID=%d, Title=%s, Release Year=%d, Host=%s, Episode Number=%d, Topic=%s]",
+        return String.format("Podcast [ID=%d, Title=%s, Release Year=%d, Host=%s, Episode=%d, Topic=%s]",
                 this.getId(), this.getTitle(), this.getReleaseYear(), this.getHost(), this.getEpisodeNumber(), this.getTopic());
     }
+
+    
 }

@@ -1,25 +1,42 @@
 package models;
 
-import java.util.Arrays;
-
-public class Album extends MusicItem {
+public final class Album extends MusicItem {
 
     private int numberOfTracks;
     private String artist, label;
 
     public Album(String[] parts) {
-        this.setCommons(Arrays.copyOfRange(parts, 0, 3));
+        try {
+            this.setId(Integer.parseInt(parts[0]));
+        } catch (NumberFormatException e) {
+            this.setId(-1);
+        }
+        this.setTitle(parts[1]);
+        try {
+            this.setReleaseYear(Integer.parseInt(parts[2]));
+        } catch (NumberFormatException e) {
+            this.setReleaseYear(-1);
+        }
         this.artist = parts[3];
         this.label = parts[4];
-        this.numberOfTracks = Integer.parseInt(parts[5]);
+        try {
+            this.setNumberOfTracks(Integer.parseInt(parts[5]));
+        } catch (NumberFormatException e) {
+            this.setNumberOfTracks(-1);
+        }
     }
 
     public int getNumberOfTracks() {
         return numberOfTracks;
     }
-
+    
     public void setNumberOfTracks(int numberOfTracks) {
-        this.numberOfTracks = numberOfTracks;
+        if (numberOfTracks >= 1 && numberOfTracks <= 100) {
+            this.numberOfTracks = numberOfTracks;
+            invalidFields.remove("number of tracks");
+        } else {
+            invalidFields.add("number of tracks");
+        }
     }
 
     public String getArtist() {
@@ -27,7 +44,9 @@ public class Album extends MusicItem {
     }
 
     public void setArtist(String artist) {
-        this.artist = artist;
+        if (artist.strip().length() != 0){this.artist = artist;
+            invalidFields.remove("artist");}
+        else{invalidFields.add("artist");}
     }
 
     public String getLabel() {
@@ -35,7 +54,9 @@ public class Album extends MusicItem {
     }
 
     public void setLabel(String label) {
-        this.label = label;
+        if (label.strip().length() != 0){this.label = label;
+            invalidFields.remove("label");}
+        else{invalidFields.add("label");}
     }
 
     @Override
@@ -56,4 +77,6 @@ public class Album extends MusicItem {
                 this.getId(), this.getTitle(), this.getReleaseYear(), this.getArtist(), this.getNumberOfTracks(), this.getLabel());
 
     }
+
+ 
 }

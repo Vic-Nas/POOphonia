@@ -23,8 +23,16 @@ public class MusicLibrary {
     }
 
     public void addItem(MusicItem item) {
+        for (MusicItem m : this.items) {
+            if (m.info().equals(item.info())) {
+                Message.send("ADD " + item.info() + " failed; item already in the library.");
+                return;
+            } else if (m.getId() == item.getId()) {
+                Message.send("ID " + item.getId() + " is already used.");
+                return;
+            }
+        }
         items.add(item);
-
     }
 
     public MusicItem searchItem(int id) {
@@ -87,6 +95,10 @@ public class MusicLibrary {
 
     public MusicItem getSearchedItem() {
         return searchedItem;
+    }
+
+    public void setItems(Iterable<MusicItem> items) {
+        this.items = (ArrayList<MusicItem>) items; 
     }
 
 }
