@@ -3,8 +3,8 @@ java -cp target ui.POOphonia
 ***** POOphonia: Welcome! *****
 Library in file POOphonia loaded successfully.
 Sourcing commands...
-Currently sourcing commands; SOURCE Ignored.
-Currently sourcing commands; SOURCE Ignored.
+Sourcing nonexistent_file.txt failed; file not found
+Sourcing commands.txt failed; file not found
 Loading from default library file.
 Library in file POOphonia loaded successfully.
 Loading from file: nonexistent_library.csv

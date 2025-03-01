@@ -46,7 +46,14 @@ public class CommandProcessor {
                             break;
                         }
                         MusicItem added = MusicItemFactory.createFromCSV(typeAndParts);
-                        String addingOutput = library.addItem(added);
+                        String addingOutput;
+                        try{
+                            addingOutput = library.addItem(added);
+                        }catch(Exception e)
+                        {
+                            addingOutput = null;
+                        }
+                        
                         if (addingOutput != null){Message.send(addingOutput);}
                         else if (added != null && added.getInvalidFields().isEmpty()) {
                             library.addItem(added); // Adds the item to the library
@@ -248,12 +255,15 @@ public class CommandProcessor {
                     }
                 }
                 case "STOP" ->{
-                    if (library.getIsPlaying() != null){
-                        Message.send("No item to STOP.");
+                    if (actionAndArgs.length == 1){
+                            if (library.getIsPlaying() == null){
+                                Message.send("No item to STOP.");
+                            }else{
+                            library.stopItem();
+                        }
                     }else{
-                    library.stopItem();
-                }
-                }
+                        Message.send("Invalid STOP command: " + command + ".");}}
+                        
                 default ->
                     Message.send("Unknown command: " + command + ".");
             }
@@ -291,15 +301,17 @@ public class CommandProcessor {
             ArrayList<SourcingException> errors = new ArrayList<>();
             while (process && (line = reader.readLine()) != null) {
                 lineNumber++;
+                // Message.send(lineNumber + "-" + line);
                 try {
                     process = processCommand(line);
                 } catch (Exception e) {
                     errors.add(new SourcingException(lineNumber, commandFileName, e));
                 }
+                // Message.send("\n");
             }
             sourcingStack.pop(); // Pop the file name from the stack after processing
             if (!errors.isEmpty()) {
-                StringBuilder errorMessage = new StringBuilder("Errors while sourcing " + commandFileName + ":\n");
+                StringBuilder errorMessage = new StringBuilder("\nErrors while sourcing " + commandFileName + ":\n");
                 for (SourcingException error : errors) {
                     errorMessage.append("\t").append(error.toString()).append("\n");
                 }

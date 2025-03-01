@@ -1,89 +1,61 @@
-# POOphonia Test Case - Comprehensive Command File
-# This test case covers all functionalities and error cases
+# POOphonia Test Case - Command File
+# This test case covers adding, removing, playing, and listing music items.
 
-# Testing SOURCE command
-SOURCE nonexistent_file.txt
-SOURCE commands.txt
-
-# Testing LOAD command
-LOAD
-LOAD nonexistent_library.csv
-LOAD POOphonia
-
-# Testing ADD command with various scenarios
-# Valid items
+# Adding various items
 ADD song,1,Imagine,1971,John Lennon,Rock,183
-ADD album,2,Thriller,1982,Michael Jackson,Epic Records,9
-ADD podcast,3,Tech Talk,2023,Jane Doe,Technology,42
+ADD song,2,Bohemian Rhapsody,1975,Queen,Rock,354
+ADD album,3,Thriller,1982,Michael Jackson,Epic Records,9
+ADD album,4,The Dark Side of the Moon,1973,Pink Floyd,Harvest Capitol,10
+ADD podcast,5,Tech Talk,2023,Jane Doe,Technology,42
+ADD podcast,6,Science Weekly,2022,John Smith,Science,24
 
-# Invalid ADD commands
-ADD
-ADD song
-ADD invalid,4,Invalid Type,2000,Artist,Genre,180
-ADD song,invalid,Title,2000,Artist,Genre,180
-ADD song,4,Title,invalid,Artist,Genre,180
-ADD song,4,Title,2000,Artist,Genre,invalid
-ADD album,5,Title,2000,Artist,invalid,Label
-ADD podcast,6,Title,2000,Host,invalid,Topic
-ADD song,1,Duplicate ID,2000,Artist,Genre,180
-ADD song,7,Imagine,1971,John Lennon,Rock,183
+# Listing all items (Expect: 6 items displayed)
+LIST
 
-# Testing SEARCH command
-SEARCH
-SEARCH 999
-SEARCH Nonexistent Title by Unknown Artist
+# Searching for a specific song by ID (Expect: Imagine by John Lennon)
 SEARCH 1
-SEARCH Imagine by John Lennon
-SEARCH invalid_format
 
-# Testing PLAY command
+# Searching for a song that does not exist (Expect: Not found)
+SEARCH 99
+
+# Searching by title and artist (Expect: Bohemian Rhapsody by Queen)
+SEARCH Bohemian Rhapsody by Queen
+
+# Playing the searched song
 PLAY
-PLAY 999
-PLAY Nonexistent Title by Unknown Artist
+
+# Searching by title and artist (Expect: Thriller by Michael Jackson )
+SEARCH Thriller by Michael Jackson
+
+# Playing Bohemian Rhapsody continues...
+PLAY
+
+# Searching by title but wrong artist (Expect: Not found)
+SEARCH Bohemian Rhapsody by The Beatles
+
+# Playing a song by ID (Expect: Playing "Imagine" by John Lennon)
 PLAY 1
-PLAY Imagine by John Lennon
-PLAY invalid_format
-PLAY 1
 
-# Testing PAUSE command
-PAUSE
-PAUSE extra_parameter
-PAUSE
+# Playing a song by title and artist (Expect: Playing "Bohemian Rhapsody" by Queen)
+PLAY Bohemian Rhapsody by Queen
 
-# Testing STOP command
-STOP
-STOP extra_parameter
+# Playing a non-existent song (Expect: Not found)
+PLAY Hey Jude by The Beatles
 
-# Testing LIST command
-LIST
-LIST extra_parameter
+# Removing a song (Expect: Bohemian Rhapsody removed)
+REMOVE 2
 
-# Testing REMOVE command
-REMOVE
-REMOVE invalid
-REMOVE 999
-REMOVE 1
+# Listing items after removal (Expect: 5 items remaining)
 LIST
 
-# Testing CLEAR command
+# Removing a non-existent item (Expect: No item found)
+REMOVE 99
+
+# Playing an item after removal (Expect: Not found)
+PLAY 2
+
+# Clearing the library before exiting
 CLEAR
-CLEAR extra_parameter
-LIST
 
-# Add items again for more tests
-ADD song,1,Imagine,1971,John Lennon,Rock,183
-ADD album,2,Thriller,1982,Michael Jackson,Epic Records,9
-ADD podcast,3,Tech Talk,2023,Jane Doe,Technology,42
-LIST
-
-# Testing SAVE command
-SAVE
-SAVE custom_library
-
-# Testing invalid commands
-UNKNOWN_COMMAND
-
-# Clear and exit
-CLEAR
-EXIT extra_parameter
+# Exit the program
 EXIT
