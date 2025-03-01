@@ -7,7 +7,7 @@ SRC_DIR = src/main/java
 BIN_DIR = target
 MAIN_CLASS = ui.POOphonia
 JAR_NAME = POOphonia.jar
-ARCHIVE_NAME = TP1_astridTanifaeni20287693_victorioNascimento20299568.tar.gz
+ARCHIVE_NAME = TP1_astridTanifeani20287693_victorioNascimento20299568.tar.gz
 
 # Find all Java files
 SOURCES := $(shell find $(SRC_DIR) -name "*.java")

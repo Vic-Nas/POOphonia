@@ -7,7 +7,7 @@ import ui.Message;
 public abstract class MusicItem {
 
     private int id, releaseYear;
-    protected ArrayList<String> invalidFields = new ArrayList<>();
+    private ArrayList<String> invalidFields = new ArrayList<>();
 
 
     public ArrayList<String> getInvalidFields() {
@@ -85,5 +85,9 @@ public abstract class MusicItem {
 
     public boolean isPaused() {
         return isPaused;
+    }
+
+    public void setInvalidFields(ArrayList<String> invalidFields) {
+        this.invalidFields = new ArrayList<>(invalidFields);
     }
 }

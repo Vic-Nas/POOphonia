@@ -1,5 +1,7 @@
 package models;
 
+import java.util.ArrayList;
+
 public final class Album extends MusicItem {
 
     private int numberOfTracks;
@@ -31,12 +33,15 @@ public final class Album extends MusicItem {
     }
     
     public void setNumberOfTracks(int numberOfTracks) {
+        ArrayList<String> invalidFields = getInvalidFields();
         if (numberOfTracks >= 1 && numberOfTracks <= 100) {
             this.numberOfTracks = numberOfTracks;
             invalidFields.remove("number of tracks");
+            
         } else {
             invalidFields.add("number of tracks");
         }
+        setInvalidFields(invalidFields);
     }
 
     public String getArtist() {
@@ -44,9 +49,11 @@ public final class Album extends MusicItem {
     }
 
     public void setArtist(String artist) {
+        ArrayList<String> invalidFields = getInvalidFields();
         if (artist.strip().length() != 0){this.artist = artist;
             invalidFields.remove("artist");}
         else{invalidFields.add("artist");}
+        setInvalidFields(invalidFields);
     }
 
     public String getLabel() {
@@ -54,9 +61,11 @@ public final class Album extends MusicItem {
     }
 
     public void setLabel(String label) {
+        ArrayList<String> invalidFields = getInvalidFields();
         if (label.strip().length() != 0){this.label = label;
             invalidFields.remove("label");}
         else{invalidFields.add("label");}
+        setInvalidFields(invalidFields);
     }
 
     @Override

@@ -1,5 +1,7 @@
 package models;
 
+import java.util.ArrayList;
+
 public final class Song extends MusicItem {
 
     private int duration;
@@ -37,12 +39,14 @@ public final class Song extends MusicItem {
     }
 
     public void setDuration(int duration) {
+        ArrayList<String> invalidFields = getInvalidFields();
         if (duration >= 1 && duration <= 36000) {
             this.duration = duration;
             invalidFields.remove("duration");
         } else {
             invalidFields.add("duration");
         }
+        setInvalidFields(invalidFields);
     }
 
     public String getArtist() {
@@ -50,11 +54,13 @@ public final class Song extends MusicItem {
     }
 
     public void setArtist(String artist) {
+        ArrayList<String> invalidFields = getInvalidFields();
         if (artist.strip().length() != 0){
             this.artist = artist;
             invalidFields.remove("artist");
         }
         else{invalidFields.add("artist");}
+        setInvalidFields(invalidFields);
     }
 
     public String getGenre() {
@@ -62,11 +68,13 @@ public final class Song extends MusicItem {
     }
 
     public void setGenre(String genre) {
+        ArrayList<String> invalidFields = getInvalidFields();
         if (genre.strip().length() != 0){
             this.genre = genre;
             invalidFields.remove("genre");
         }
         else{invalidFields.add("genre");}
+        setInvalidFields(invalidFields);
     }
 
     @Override

@@ -1,5 +1,7 @@
 package models;
 
+import java.util.ArrayList;
+
 public final class Podcast extends MusicItem {
 
     private int episodeNumber;
@@ -31,12 +33,14 @@ public final class Podcast extends MusicItem {
     }
 
     private void setEpisodeNumber(int episodeNumber) {
+        ArrayList<String> invalidFields = getInvalidFields();
         if (episodeNumber >= 1 && episodeNumber <= 500) {
             this.episodeNumber = episodeNumber;
             invalidFields.remove("episode number");
         } else {
             invalidFields.add("episode number");
         }
+        setInvalidFields(invalidFields);
     }
 
     public String getHost() {
@@ -44,9 +48,13 @@ public final class Podcast extends MusicItem {
     }
 
     public void setHost(String host) {
-        if (host.strip().length() != 0){this.host = host;
-            invalidFields.remove("host");}
+        ArrayList<String> invalidFields = getInvalidFields();
+        if (host.strip().length() != 0){
+            this.host = host;
+            invalidFields.remove("host");
+        }
         else{invalidFields.add("host");}
+        setInvalidFields(invalidFields);
     }
 
     public String getTopic() {
@@ -54,8 +62,13 @@ public final class Podcast extends MusicItem {
     }
 
     public void setTopic(String topic) {
-        if (topic.strip().length() != 0){this.topic = topic;invalidFields.remove("topic");}
+        ArrayList<String> invalidFields = getInvalidFields();
+        if (topic.strip().length() != 0){
+            this.topic = topic;
+            invalidFields.remove("topic");
+        }
         else{invalidFields.add("topic");}
+        setInvalidFields(invalidFields);
     }
 
     @Override
