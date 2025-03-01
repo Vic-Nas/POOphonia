@@ -1,0 +1,82 @@
+***** POOphonia: Welcome! *****
+Library in file POOphonia loaded successfully.
+Sourcing commands...
+Sourcing nonexistent_file.txt failed; file not found.
+Currently sourcing commands.txt; SOURCE ignored.
+Loading from default library file.
+Loading from file: nonexistent_library.csv
+Error reading library file: nonexistent_library.csv
+Loading from file: POOphonia
+Library in file POOphonia loaded successfully.
+Song of 1971 Imagine by John Lennon added to the library successfully.
+Library saved successfully to POOphonia.
+Album Thriller of 1982 with 9 tracks by Michael Jackson added to the library successfully.
+Library saved successfully to POOphonia.
+Podcast Tech Talk episode 42 of 2023 on Technology by Jane Doe added to the library successfully.
+Library saved successfully to POOphonia.
+Invalid ADD command: ADD
+Invalid ADD command: ADD song
+Wrong music item: ADD invalid,4,Invalid Type,2000,Artist,Genre,180
+Invalid music ID: ADD song,invalid,Title,2000,Artist,Genre,180
+Invalid release year: ADD song,4,Title,invalid,Artist,Genre,180
+Invalid duration: ADD song,4,Title,2000,Artist,Genre,invalid
+Invalid number of tracks: ADD album,5,Title,2000,Artist,invalid,Label
+Invalid episode number: ADD podcast,6,Title,2000,Host,invalid,Topic
+ADD song,1,Duplicate ID,2000,Artist,Genre,180 failed; ID already used.
+ADD song,7,Imagine,1971,John Lennon,Rock,183 failed; item already in library.
+Invalid SEARCH command: SEARCH
+SEARCH item ID 999 failed; no such item
+SEARCH Nonexistent Title by Unknown Artist failed; no item found.
+Song of 1971 Imagine by John Lennon is ready to PLAY
+Song of 1971 Imagine by John Lennon is ready to PLAY
+Invalid SEARCH format. Use 'SEARCH <id>' or 'SEARCH <title> by <artist>'
+Playing Song of 1971 Imagine by John Lennon.
+PLAY item ID 999 failed; no such item.
+PLAY item: Nonexistent Title by Unknown Artist failed; no such item.
+Song of 1971 Imagine by John Lennon is already playing.
+Song of 1971 Imagine by John Lennon is already playing.
+Invalid PLAY format. Use 'PLAY', 'PLAY <id>' or 'PLAY <title> by <artist>'
+Song of 1971 Imagine by John Lennon is already playing.
+Pausing Song of 1971 Imagine by John Lennon.
+Invalid PAUSE command: PAUSE extra_parameter
+Song of 1971 Imagine by John Lennon; is already on pause.
+Stopping Song of 1971 Imagine by John Lennon.
+Invalid STOP command: STOP extra_parameter
+Library:
+Song [ID=1, Title=Imagine, Release Year=1971, Artist=John Lennon, Genre=Rock, Duration=183s]
+Album [ID=2, Title=Thriller, Release Year=1982, Artist=Michael Jackson, Tracks=9, Label=Epic Records]
+Podcast [ID=3, Title=Tech Talk, Release Year=2023, Host=Jane Doe, Episode=42, Topic=Technology]
+Invalid LIST command: LIST extra_parameter
+Invalid REMOVE command: REMOVE
+Invalid ID for REMOVE command: invalid
+REMOVE item 999 failed; no such item.
+Removed Song of 1971 Imagine by John Lennon successfully.
+Library saved successfully to POOphonia.
+Library:
+Album [ID=2, Title=Thriller, Release Year=1982, Artist=Michael Jackson, Tracks=9, Label=Epic Records]
+Podcast [ID=3, Title=Tech Talk, Release Year=2023, Host=Jane Doe, Episode=42, Topic=Technology]
+Music library has been cleared successfully.
+Library saved successfully to POOphonia.
+Invalid CLEAR command: CLEAR extra_parameter
+The library is empty.
+Song of 1971 Imagine by John Lennon added to the library successfully.
+Library saved successfully to POOphonia.
+Album Thriller of 1982 with 9 tracks by Michael Jackson added to the library successfully.
+Library saved successfully to POOphonia.
+Podcast Tech Talk episode 42 of 2023 on Technology by Jane Doe added to the library successfully.
+Library saved successfully to POOphonia.
+Library:
+Song [ID=1, Title=Imagine, Release Year=1971, Artist=John Lennon, Genre=Rock, Duration=183s]
+Album [ID=2, Title=Thriller, Release Year=1982, Artist=Michael Jackson, Tracks=9, Label=Epic Records]
+Podcast [ID=3, Title=Tech Talk, Release Year=2023, Host=Jane Doe, Episode=42, Topic=Technology]
+Saving to default library file.
+Library saved successfully to POOphonia.
+Saving to file: custom_library
+Library saved successfully to custom_library.
+Unknown command: UNKNOWN_COMMAND
+Music library has been cleared successfully.
+Library saved successfully to POOphonia.
+Invalid EXIT command: EXIT extra_parameter
+Exiting program...
+Library saved successfully to POOphonia.
+***** POOphonia: Goodbye! *****

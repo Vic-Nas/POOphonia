@@ -6,7 +6,6 @@ import ui.Message;
 
 public abstract class MusicItem {
 
-    public static final int BAD_INT_VALUE = -1;
     private int id, releaseYear;
     protected ArrayList<String> invalidFields = new ArrayList<>();
 
@@ -34,7 +33,10 @@ public abstract class MusicItem {
     }
 
     public void setTitle(String title) {
-        if (title.strip().length() != 0){this.title = title;}
+        if (title.strip().length() != 0){
+            this.title = title;
+            invalidFields.remove("title");
+        }
         else{invalidFields.add("title");}
         
     }

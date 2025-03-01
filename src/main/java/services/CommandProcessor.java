@@ -4,73 +4,35 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Stack;
 
 import models.MusicItem;
 import models.MusicItemFactory;
 import ui.Message;
 
 public class CommandProcessor {
+    // Default file path for the music library data
+    private static String libraryFile = MusicLibraryFileHandler.getDefaultFile();
+
+    // Stack to keep track of currently sourcing files
+    private static final Stack<String> sourcingStack = new Stack<>();
+
+    // Static variable to hold the MusicLibrary instance
+    private static MusicLibrary library;
+
+    public static void processCommands(MusicLibrary library) {
+        MusicLibraryFileHandler.loadLibrary(MusicLibraryFileHandler.getDefaultFile());
+        CommandProcessor.library = library;
+        processCommand("SOURCE");
+    }
 
     // Method to check if a command is a comment
     private static boolean isComment(String command) {
         return command.startsWith("#");
     }
 
-    // Default file path for the music library data
-    private static String libraryFile = MusicLibraryFileHandler.getDefaultFile();
-
-    // Variable to store the name of the file currently being sourced
-    private static String sourcing;
-
-    // Static variable to hold the MusicLibrary instance
-    protected static MusicLibrary library;
-
-    // Method to play a music item
-    private static void play(MusicItem item) {
-        // If an item is currently playing, stop it
-        if (library.getIsPlaying() != null) {
-            library.stopItem(); // Stops the currently playing item
-        }
-
-        library.playItem(item);
-        Message.send("Playing " + item.info() + ".");
-    }
-
-    // Method to source commands from a file
-    private static void source(String commandFileName) {
-        // Check if sourcing is not already in progress
-        if (sourcing == null) {
-            // Try to read and process commands from the specified file
-            try (BufferedReader reader = new BufferedReader(new FileReader("data/" + commandFileName + ".txt"))) {
-                Message.send("Sourcing " + commandFileName + "...");
-                sourcing = commandFileName; // Sets the sourcing variable to the current file name
-                String line;
-                int lineNumber = 0;
-                // Read the file line by line
-                while ((line = reader.readLine()) != null) {
-                    lineNumber ++;
-                    if (line.strip().equals("EXIT")) {
-                        break;
-                    }
-                    try{
-                        processCommand(line);
-                    }catch(Exception e){
-                        Message.send("Error at command line " + lineNumber + ": " + line + "\n\t\t\t" + e.toString());
-                    }
-                    
-                }
-                sourcing = null; // Resets the sourcing variable after processing the file
-            } catch (IOException e) {
-                Message.send("Sourcing" + commandFileName + " failed; file not found");
-            }
-        } else {
-            Message.send("Currently sourcing " + sourcing + "; SOURCE Ignored.");
-        }
-    }
-
     // Method to process a single command
-    public static void processCommand(String command) {
+    public static boolean processCommand(String command) {
         // Makes sure the command is not blank and is not a comment
         if (!command.isBlank() && !isComment(command)) {
             String[] actionAndArgs = command.split(" ", 2);
@@ -80,11 +42,13 @@ public class CommandProcessor {
                     if (actionAndArgs.length == 2) {
                         String[] typeAndParts = actionAndArgs[1].split(",");
                         if (typeAndParts.length != 7){
-                            Message.send("Wrong number of elements: " + command);
+                            Message.send("Wrong number of elements: " + command + ".");
                             break;
                         }
                         MusicItem added = MusicItemFactory.createFromCSV(typeAndParts);
-                        if (added != null && added.getInvalidFields().isEmpty()) {
+                        String addingOutput = library.addItem(added);
+                        if (addingOutput != null){Message.send(addingOutput);}
+                        else if (added != null && added.getInvalidFields().isEmpty()) {
                             library.addItem(added); // Adds the item to the library
                             Message.send(added.info() + " added to the library successfully.");
                             MusicLibraryFileHandler.saveLibrary(library.getItems(), libraryFile);
@@ -92,21 +56,37 @@ public class CommandProcessor {
                         } else if (added != null && !added.getInvalidFields().isEmpty()) {
                             Message.send("Invalid " + String.join(",", added.getInvalidFields()) + ": " + command);
                         } else {
-                            Message.send("Wrong music item: " + command);
+                            Message.send("Wrong music item: " + command + ".");
                         }
                     } else {
-                        Message.send("Invalid ADD command: " + command);
+                        Message.send("Invalid ADD command: " + command + ".");
                     }
                 }
                 case "CLEAR" -> {
+                    if (actionAndArgs.length == 1){
+                    if (library.getItems().isEmpty()){
+                        Message.send("Music library is already empty.");
+                        break;}
                     library.clearAllItems();
                     Message.send("Music library has been cleared successfully.");
-                    MusicLibraryFileHandler.saveLibrary(library.getItems(), libraryFile);
+                    MusicLibraryFileHandler.saveLibrary(library.getItems(), libraryFile);}
                 }
-                case "EXIT" ->
-                    Message.send("Invalid arguments for EXIT.");
+                case "EXIT" ->{
+                    if (actionAndArgs.length == 1){
+                        Message.send("Exiting program...");
+                        return false;
+                    }else{
+                        Message.send("Invalid EXIT command: " + command + ".");}}
                 case "LIST" ->
-                    library.listAllItems();
+                    {
+                        if (actionAndArgs.length == 1){
+                            if (library.getItems().isEmpty()){
+                                Message.send("The library is empty.");
+                            }else{
+                                library.listAllItems();
+                            }
+                        }else{
+                            Message.send("Invalid LIST command: " + command + ".");}}
                 case "LOAD" -> {
                     switch (actionAndArgs.length) {
                         case 1 -> {// If no file name is provided, load from the default file
@@ -130,13 +110,17 @@ public class CommandProcessor {
                     if (actionAndArgs.length == 1) {
                         // Check if an item is currently playing
                         if (library.getIsPlaying() != null) {
+                            if (library.getIsPlaying().isPaused()){
+                                Message.send(library.getIsPlaying().info() + "; is already on pause.");
+                                break;
+                            }
                             library.pauseItem(); // Pauses the currently playing item
-                            Message.send("Paused " + library.getIsPlaying().info() + ".");
+                            Message.send("Pausing " + library.getIsPlaying().info() + ".");
                         } else {
-                            Message.send("No item is currently playing.");
+                            Message.send("No item to pause.");
                         }
                     } else {
-                        Message.send("Invalid arguments for PAUSE.");
+                        Message.send("Invalid PAUSE command: " + command + ".");
                     }
                 }
                 case "PLAY" -> {
@@ -169,7 +153,7 @@ public class CommandProcessor {
                         // If no arguments are provided, play the searched item or send an error message
                         if (library.getIsPlaying() == null) {
                             if (library.getSearchedItem() == null) {
-                                Message.send("Invalid PLAY command: " + String.join(" ", actionAndArgs));
+                                Message.send("Invalid PLAY command: " + String.join(" ", actionAndArgs) + ".");
                             } else {
                                 play(library.getSearchedItem());
                             }
@@ -193,10 +177,10 @@ public class CommandProcessor {
                                 Message.send("REMOVE item " + id + " failed; no such item.");
                             }
                         } catch (NumberFormatException e) {
-                            Message.send("Invalid ID for REMOVE command: " + actionAndArgs[1]);
+                            Message.send("Invalid ID for REMOVE command: " + actionAndArgs[1] + ".");
                         }
                     } else {
-                        Message.send("Invalid REMOVE command: " + String.join(" ", actionAndArgs));
+                        Message.send("Invalid REMOVE command: " + String.join(" ", actionAndArgs) + ".");
                     }
                 }
 
@@ -207,7 +191,7 @@ public class CommandProcessor {
                             Message.send("Saving to default library file.");
                             MusicLibraryFileHandler.saveLibrary(library.getItems(), libraryFile); }
                         case 2 -> { // If a file name is provided, save to that file
-                            Message.send("Saving to file: " + actionAndArgs[1]);
+                            Message.send("Saving to file: " + actionAndArgs[1] + ".");
                             MusicLibraryFileHandler.saveLibrary(library.getItems(), actionAndArgs[1]); // Saves the library to the specified file
                         }
                         default -> // If the number of arguments is invalid, send an error message
@@ -230,7 +214,7 @@ public class CommandProcessor {
                                 searchedItem = library.searchItem(id);
                             } catch (NumberFormatException e) {
                                 Message.send("Invalid SEARCH format. Use 'SEARCH <id>' or 'SEARCH <title> by <artist>.'");
-                                return;
+                                break;
                             }
                         }
 
@@ -271,19 +255,87 @@ public class CommandProcessor {
                 }
                 }
                 default ->
-                    Message.send("Unknown operation.");
+                    Message.send("Unknown command: " + command + ".");
             }
         }
+        return true;
     }
-    // List of commands to be executed at the start of the application
-    private final static ArrayList<String> startingCommands = new ArrayList<>(Arrays.asList("LOAD", "SOURCE"));
 
-    public static void processCommands(MusicLibrary library) {
-        CommandProcessor.library = library;
-        for (String command : startingCommands) {
+    // Method to play a music item
+    private static void play(MusicItem item) {
+        // If an item is currently playing, stop it
+        if (library.getIsPlaying() != null) {
+            library.stopItem(); // Stops the currently playing item
+        }
 
-            processCommand(command);
+        library.playItem(item);
+        Message.send("Playing " + item.info() + ".");
+    }
+
+    // Method to source commands from a file
+    private static void source(String commandFileName) {
+        // Check if the file is already being sourced in the current chain
+        if (sourcingStack.contains(commandFileName)) {
+            Message.send("Currently sourcing " + commandFileName + "; SOURCE ignored.");
+            return;
+        }
+
+        // Try to read and process commands from the specified file
+        try (BufferedReader reader = new BufferedReader(new FileReader("data/" + commandFileName + ".txt"))) {
+            Message.send("Sourcing " + commandFileName + "...");
+            sourcingStack.push(commandFileName); // Push the file name onto the stack
+            String line;
+            int lineNumber = 0;
+            // Read the file line by line
+            boolean process = true;
+            ArrayList<SourcingException> errors = new ArrayList<>();
+            while (process && (line = reader.readLine()) != null) {
+                lineNumber++;
+                try {
+                    process = processCommand(line);
+                } catch (Exception e) {
+                    errors.add(new SourcingException(lineNumber, commandFileName, e));
+                }
+            }
+            sourcingStack.pop(); // Pop the file name from the stack after processing
+            if (!errors.isEmpty()) {
+                StringBuilder errorMessage = new StringBuilder("Errors while sourcing " + commandFileName + ":\n");
+                for (SourcingException error : errors) {
+                    errorMessage.append("\t").append(error.toString()).append("\n");
+                }
+                Message.send(errorMessage.toString());
+            }
+        } catch (IOException e) {
+            Message.send("Sourcing " + commandFileName + " failed; file not found");
         }
     }
 
+    public static class SourcingException {
+        private final int lineNumber;
+        private final String fileName;
+        private final Exception exception;
+
+        public SourcingException(int lineNumber, String fileName, Exception exception) {
+            this.lineNumber = lineNumber;
+            this.fileName = fileName;
+            this.exception = exception;
+        }
+
+        public int getLineNumber() {
+            return lineNumber;
+        }
+
+        public String getFileName() {
+            return fileName;
+        }
+
+        public Exception getException() {
+            return exception;
+        }
+
+        @Override
+        public String toString() {
+            return "Error in file " + fileName + " at line " + lineNumber + ": " + exception.toString();
+        }
+    }
 }

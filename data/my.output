@@ -1,0 +1,97 @@
+javac -d target src/main/java/models/Album.java src/main/java/models/MusicItem.java src/main/java/models/MusicItemFactory.java src/main/java/models/Podcast.java src/main/java/models/Song.java src/main/java/services/CommandProcessor.java src/main/java/services/MusicLibrary.java src/main/java/services/MusicLibraryFileHandler.java src/main/java/ui/Message.java src/main/java/ui/POOphonia.java
+java -cp target ui.POOphonia
+***** POOphonia: Welcome! *****
+Library in file POOphonia loaded successfully.
+Sourcing commands...
+Currently sourcing commands; SOURCE Ignored.
+Currently sourcing commands; SOURCE Ignored.
+Loading from default library file.
+Library in file POOphonia loaded successfully.
+Loading from file: nonexistent_library.csv
+No library nonexistent_library.csv found.
+Loading from file: POOphonia
+Library in file POOphonia loaded successfully.
+Song of 1971 Imagine by John Lennon added to the library successfully.
+Library saved successfully to POOphonia.
+Album Thriller of 1982 with 9 tracks by Michael Jackson added to the library successfully.
+Library saved successfully to POOphonia.
+Podcast Tech Talk episode 42 of 2023 on Technology by Jane Doe added to the library successfully.
+Library saved successfully to POOphonia.
+Invalid ADD command: ADD.
+Wrong number of elements: ADD song.
+Invalid ID: ADD song,invalid,Title,2000,Artist,Genre,180
+Invalid release year: ADD song,4,Title,invalid,Artist,Genre,180
+ADD Song of 2000 Title by Artist failed; item already in the library.
+Invalid number of tracks: ADD album,5,Title,2000,Artist,invalid,Label
+Invalid episode number: ADD podcast,6,Title,2000,Host,invalid,Topic
+ID 1 is already used.
+ADD Song of 1971 Imagine by John Lennon failed; item already in the library.
+Invalid SEARCH command: SEARCH.
+SEARCH item ID 999 failed; no such item.
+SEARCH Nonexistent Title by Unknown Artist failed; no item found.
+Song of 1971 Imagine by John Lennon is ready to PLAY.
+Song of 1971 Imagine by John Lennon is ready to PLAY.
+Invalid SEARCH format. Use 'SEARCH <id>' or 'SEARCH <title> by <artist>.'
+Playing Song of 1971 Imagine by John Lennon.
+PLAY item ID 999 failed; no such item.
+PLAY item: Nonexistent Title by Unknown Artist failed; no such item.
+Stopping Song of 1971 Imagine by John Lennon.
+Playing Song of 1971 Imagine by John Lennon.
+Stopping Song of 1971 Imagine by John Lennon.
+Playing Song of 1971 Imagine by John Lennon.
+Invalid arguments for PLAY.
+Stopping Song of 1971 Imagine by John Lennon.
+Playing Song of 1971 Imagine by John Lennon.
+Pausing Song of 1971 Imagine by John Lennon.
+Invalid PAUSE command: PAUSE extra_parameter.
+Song of 1971 Imagine by John Lennon; is already on pause.
+No item to STOP.
+No item to STOP.
+Library:
+Song [ID=1, Title=Imagine, Release Year=1971, Artist=John Lennon, Genre=Rock, Duration=183s]
+Album [ID=2, Title=Thriller, Release Year=1982, Artist=Michael Jackson, Tracks=9, Label=Epic Records]
+Podcast [ID=3, Title=Tech Talk, Release Year=2023, Host=Jane Doe, Episode=42, Topic=Technology]
+Song [ID=0, Title=Title, Release Year=2000, Artist=Artist, Genre=Genre, Duration=180s]
+Song [ID=4, Title=Title, Release Year=0, Artist=Artist, Genre=Genre, Duration=180s]
+Album [ID=5, Title=Title, Release Year=2000, Artist=Artist, Tracks=0, Label=invalid]
+Podcast [ID=6, Title=Title, Release Year=2000, Host=Host, Episode=0, Topic=invalid]
+Invalid LIST command: LIST extra_parameter.
+Invalid REMOVE command: REMOVE.
+Invalid ID for REMOVE command: invalid.
+REMOVE item 999 failed; no such item.
+Removed Song of 1971 Imagine by John Lennon successfully.
+Library saved successfully to POOphonia.
+Library:
+Album [ID=2, Title=Thriller, Release Year=1982, Artist=Michael Jackson, Tracks=9, Label=Epic Records]
+Podcast [ID=3, Title=Tech Talk, Release Year=2023, Host=Jane Doe, Episode=42, Topic=Technology]
+Song [ID=0, Title=Title, Release Year=2000, Artist=Artist, Genre=Genre, Duration=180s]
+Song [ID=4, Title=Title, Release Year=0, Artist=Artist, Genre=Genre, Duration=180s]
+Album [ID=5, Title=Title, Release Year=2000, Artist=Artist, Tracks=0, Label=invalid]
+Podcast [ID=6, Title=Title, Release Year=2000, Host=Host, Episode=0, Topic=invalid]
+Music library has been cleared successfully.
+Library saved successfully to POOphonia.
+The library is empty.
+Song of 1971 Imagine by John Lennon added to the library successfully.
+Library saved successfully to POOphonia.
+Album Thriller of 1982 with 9 tracks by Michael Jackson added to the library successfully.
+Library saved successfully to POOphonia.
+Podcast Tech Talk episode 42 of 2023 on Technology by Jane Doe added to the library successfully.
+Library saved successfully to POOphonia.
+Library:
+Song [ID=1, Title=Imagine, Release Year=1971, Artist=John Lennon, Genre=Rock, Duration=183s]
+Album [ID=2, Title=Thriller, Release Year=1982, Artist=Michael Jackson, Tracks=9, Label=Epic Records]
+Podcast [ID=3, Title=Tech Talk, Release Year=2023, Host=Jane Doe, Episode=42, Topic=Technology]
+Saving to default library file.
+Library saved successfully to POOphonia.
+Saving to file: custom_library.
+Library saved successfully to custom_library.
+Unknown command: UNKNOWN_COMMAND.
+Music library has been cleared successfully.
+Library saved successfully to POOphonia.
+Invalid EXIT command: EXIT extra_parameter.
+Exiting program...
+Errors while sourcing commands:
+	Error in file commands at line 22: java.lang.NullPointerException: Cannot invoke "models.MusicItem.info()" because "<parameter1>" is null
+
+Library saved successfully to POOphonia.
+***** POOphonia: Goodbye! *****

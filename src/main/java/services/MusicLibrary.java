@@ -22,17 +22,16 @@ public class MusicLibrary {
         return isPlaying;
     }
 
-    public void addItem(MusicItem item) {
+    public String addItem(MusicItem item) {
         for (MusicItem m : this.items) {
             if (m.info().equals(item.info())) {
-                Message.send("ADD " + item.info() + " failed; item already in the library.");
-                return;
+                return "ADD " + item.info() + " failed; item already in the library.";
             } else if (m.getId() == item.getId()) {
-                Message.send("ID " + item.getId() + " is already used.");
-                return;
+                return "ID " + item.getId() + " is already used.";
             }
         }
         items.add(item);
+        return null;
     }
 
     public MusicItem searchItem(int id) {
