@@ -54,6 +54,7 @@ public class MusicLibraryFileHandler {
         if (libraryName.equals("")) {
             libraryName = DEFAULT_FILE;
         }
+        
         filePath += libraryName + ".csv"; // Ensure the file is saved in the "data" directory
         // Attempt to write the music library to a file
         try (PrintWriter writer = new PrintWriter(new FileWriter(filePath))) {

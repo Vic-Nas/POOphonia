@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Scanner;
 import java.util.Stack;
 
 import models.MusicItem;
@@ -22,11 +23,18 @@ public class CommandProcessor {
     public static boolean excited = false;
 
     public static void processCommands(MusicLibrary library) {
-        MusicLibraryFileHandler.loadLibrary(MusicLibraryFileHandler.getDefaultFile());
         CommandProcessor.library = library;
-        
         processCommand("SOURCE");
         if (!excited){processCommand("EXIT");}
+    }
+
+    public static void interact(MusicLibrary library) {
+        CommandProcessor.library = library;
+        try (Scanner scan = new Scanner(System.in)) {
+            while (true) { 
+                processCommand(scan.nextLine());
+            }
+        }
     }
 
     // Method to check if a command is a comment
@@ -49,33 +57,36 @@ public class CommandProcessor {
     public static boolean processCommand(String command) {
         // Makes sure the command is not blank and is not a comment
         if (!command.isBlank() && !isComment(command)) {
+            command = command.trim();
             String[] actionAndArgs = command.split(" ", 2);
             String action = actionAndArgs[0]; // Extracts the action from the command
             switch (action) {
                 case "ADD" -> {
                     if (actionAndArgs.length == 2) {
                         String[] typeAndParts = actionAndArgs[1].split(",");
+                        for (int i = 0; i < typeAndParts.length; i++) {
+                            typeAndParts[i] = typeAndParts[i].trim();
+                        }
                         if (typeAndParts.length != 7){
                             Message.send("Wrong number of elements: " + command + ".");
                             break;
                         }
-                        MusicItem added = MusicItemFactory.createFromCSV(typeAndParts);
-                        String addingOutput;
-                        try{
-                            addingOutput = library.addItem(added);
-                        }catch(Exception e)
-                        {
-                            addingOutput = null;
+                        MusicItem toAdd = MusicItemFactory.createFromCSV(typeAndParts);
+                        String addingOutput = null;
+                        if (toAdd != null && toAdd.getInvalidFields().isEmpty() ){
+                            addingOutput = library.addItem(toAdd);
                         }
                         
-                        if (addingOutput != null){Message.send(addingOutput);}
-                        else if (added != null && added.getInvalidFields().isEmpty()) {
-                            library.addItem(added); // Adds the item to the library
-                            Message.send(added.info() + " added to the library successfully.");
+                        if (addingOutput != null){
+                            Message.send(addingOutput);
+                        }
+                        else if (toAdd != null && toAdd.getInvalidFields().isEmpty()) {
+                            library.addItem(toAdd); // Adds the item to the library
+                            Message.send(toAdd.info() + " added to the library successfully.");
                             MusicLibraryFileHandler.saveLibrary(library.getItems(), libraryFile);
 
-                        } else if (added != null && !added.getInvalidFields().isEmpty()) {
-                            Message.send("Invalid " + String.join(",", added.getInvalidFields()) + ": " + command);
+                        } else if (toAdd != null && !toAdd.getInvalidFields().isEmpty()) {
+                            Message.send("Invalid " + String.join(", ", toAdd.getInvalidFields()) + ": " + command);
                         } else {
                             Message.send("Wrong music item: " + command + ".");
                         }
@@ -90,7 +101,10 @@ public class CommandProcessor {
                         break;}
                     library.clearAllItems();
                     Message.send("Music library has been cleared successfully.");
-                    MusicLibraryFileHandler.saveLibrary(library.getItems(), libraryFile);}
+                    MusicLibraryFileHandler.saveLibrary(library.getItems(), libraryFile);
+                }else{
+                    Message.send("Invalid CLEAR command: " + command);
+                }
                 }
                 case "EXIT" ->{
                     if (actionAndArgs.length == 1){
@@ -113,12 +127,12 @@ public class CommandProcessor {
                     switch (actionAndArgs.length) {
                         case 1 -> {// If no file name is provided, load from the default file
                             Message.send("Loading from default library file.");
-                            library.setItems(MusicLibraryFileHandler.loadLibrary(libraryFile));}
+                            library = new MusicLibrary(MusicLibraryFileHandler.loadLibrary(libraryFile));}
                         case 2 -> {
-                            MusicLibrary temp = new MusicLibrary();
+                            
                             String fileName = actionAndArgs[1];
                             Message.send("Loading from file: " + actionAndArgs[1]);
-                            temp.setItems(MusicLibraryFileHandler.loadLibrary(fileName));
+                            MusicLibrary temp = new MusicLibrary(MusicLibraryFileHandler.loadLibrary(fileName));
                             if (!temp.getItems().isEmpty()){
                                 libraryFile = fileName; // Updates the library file name
                                 library = temp;
@@ -146,7 +160,6 @@ public class CommandProcessor {
                     }
                 }
                 case "PLAY" -> {
-
                     if (actionAndArgs.length == 2) {
                         String[] playArgs = actionAndArgs[1].split(" by "); // Splits the arguments into title and artist
                         // If both title and artist are provided

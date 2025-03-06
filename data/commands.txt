@@ -58,4 +58,4 @@ PLAY 2
 CLEAR
 
 # Exit the program
-# EXIT
+EXIT

@@ -6,6 +6,8 @@ public final class Song extends MusicItem {
 
     private int duration;
     private String artist, genre;
+    private final int maxDuration = 36000;
+
     public Song(String[] parts) {
         try {
             this.setId(Integer.parseInt(parts[0]));
@@ -40,7 +42,7 @@ public final class Song extends MusicItem {
 
     public void setDuration(int duration) {
         ArrayList<String> invalidFields = getInvalidFields();
-        if (duration >= 1 && duration <= 36000) {
+        if (duration >= 1 && duration <= maxDuration) {
             this.duration = duration;
             invalidFields.remove("duration");
         } else {

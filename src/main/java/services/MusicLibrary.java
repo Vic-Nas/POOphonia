@@ -1,6 +1,7 @@
 package services;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import models.Album;
 import models.MusicItem;
@@ -9,14 +10,20 @@ import ui.Message;
 
 public class MusicLibrary {
 
-    private ArrayList<MusicItem> items = new ArrayList<>();
+    private ArrayList<MusicItem> items;
     private MusicItem searchedItem;
+    private MusicItem isPlaying = null;
 
+    public MusicLibrary(Iterable<MusicItem> items) {
+        this.items = (ArrayList<MusicItem>) items; 
+    }
+    public MusicLibrary() {
+        this.items = (ArrayList<MusicItem>) MusicLibraryFileHandler.loadLibrary(
+            MusicLibraryFileHandler.getDefaultFile()); 
+    }
     public ArrayList<MusicItem> getItems() {
         return new ArrayList<>(items);
     }
-
-    private MusicItem isPlaying = null;
 
     public MusicItem getIsPlaying() {
         return isPlaying;
@@ -59,14 +66,22 @@ public class MusicLibrary {
 
     public void removeItem(MusicItem item) {
         items.remove(item);
+        if (item.isPlaying()){
+            isPlaying = null;
+        }
+    }
+
+    @Override
+    public String toString() {
+        List<String> itemStrings = new ArrayList<>();
+        for (MusicItem item : items) {
+            itemStrings.add(item.toString());
+        }
+        return "Library:\n" + String.join("\n", itemStrings);
     }
 
     public void listAllItems() {
-        Message.send("Library:");
-        for (MusicItem item : items) {
-            Message.send(item.toString());
-
-        }
+        Message.send(this.toString());
     }
 
     public void playItem(MusicItem item) {
@@ -95,9 +110,4 @@ public class MusicLibrary {
     public MusicItem getSearchedItem() {
         return searchedItem;
     }
-
-    public void setItems(Iterable<MusicItem> items) {
-        this.items = (ArrayList<MusicItem>) items; 
-    }
-
 }

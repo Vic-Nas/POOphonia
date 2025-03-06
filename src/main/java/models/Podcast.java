@@ -6,6 +6,7 @@ public final class Podcast extends MusicItem {
 
     private int episodeNumber;
     private String host, topic;
+    private final int maxNumberOfEpisodes = 500;
 
     public Podcast(String[] parts) {
         try {
@@ -34,7 +35,7 @@ public final class Podcast extends MusicItem {
 
     private void setEpisodeNumber(int episodeNumber) {
         ArrayList<String> invalidFields = getInvalidFields();
-        if (episodeNumber >= 1 && episodeNumber <= 500) {
+        if (episodeNumber >= 1 && episodeNumber <= maxNumberOfEpisodes) {
             this.episodeNumber = episodeNumber;
             invalidFields.remove("episode number");
         } else {

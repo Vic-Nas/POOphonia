@@ -6,6 +6,7 @@ public final class Album extends MusicItem {
 
     private int numberOfTracks;
     private String artist, label;
+    private final int maxNumberOfTracks = 100;
 
     public Album(String[] parts) {
         try {
@@ -34,7 +35,7 @@ public final class Album extends MusicItem {
     
     public void setNumberOfTracks(int numberOfTracks) {
         ArrayList<String> invalidFields = getInvalidFields();
-        if (numberOfTracks >= 1 && numberOfTracks <= 100) {
+        if (numberOfTracks >= 1 && numberOfTracks <= maxNumberOfTracks) {
             this.numberOfTracks = numberOfTracks;
             invalidFields.remove("number of tracks");
             

@@ -8,7 +8,7 @@ public abstract class MusicItem {
 
     private int id, releaseYear;
     private ArrayList<String> invalidFields = new ArrayList<>();
-
+    private final int minReleaseYear = 1825, maxReleaseYear = 2025;
 
     public ArrayList<String> getInvalidFields() {
         return new ArrayList<>(invalidFields);
@@ -22,9 +22,9 @@ public abstract class MusicItem {
             invalidFields.add("ID");
         }
     }
-
+    
     public void setReleaseYear(int releaseYear) {
-        if (releaseYear >= 1825 && releaseYear <= 2025) {
+        if (releaseYear >= minReleaseYear && releaseYear <= maxReleaseYear) {
             this.releaseYear = releaseYear;
             invalidFields.remove("release year");
         } else {

@@ -39,6 +39,8 @@ public class POOphonia {
         // Save the library to the default file data/POOphonia.csv file
         library.save("");
 
+        // CommandProcessor.interact(library);
+
         // Display exit message
         Message.send("***** POOphonia: Goodbye! *****");
 
