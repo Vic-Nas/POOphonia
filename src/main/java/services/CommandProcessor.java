@@ -19,11 +19,14 @@ public class CommandProcessor {
 
     // Static variable to hold the MusicLibrary instance
     private static MusicLibrary library;
+    public static boolean excited = false;
 
     public static void processCommands(MusicLibrary library) {
         MusicLibraryFileHandler.loadLibrary(MusicLibraryFileHandler.getDefaultFile());
         CommandProcessor.library = library;
+        
         processCommand("SOURCE");
+        if (!excited){processCommand("EXIT");}
     }
 
     // Method to check if a command is a comment
@@ -31,7 +34,18 @@ public class CommandProcessor {
         return command.startsWith("#");
     }
 
-    // Method to process a single command
+    /**
+     * Processes a single command for managing the music library.
+     *
+     * @param command The command to be processed.
+     * @return A boolean indicating whether to continue 
+     * processing subsequent commands (true) or to stop (false).
+     *
+     * The method performs the following steps:
+     * 1. Makes sure the command is not blank or a comment. 
+     * 2. Splits the command into an action and its arguments.
+     * 3. Uses a switch statement to handle the different command actions.
+     */
     public static boolean processCommand(String command) {
         // Makes sure the command is not blank and is not a comment
         if (!command.isBlank() && !isComment(command)) {
@@ -81,6 +95,7 @@ public class CommandProcessor {
                 case "EXIT" ->{
                     if (actionAndArgs.length == 1){
                         Message.send("Exiting program...");
+                        excited = true;
                         return false;
                     }else{
                         Message.send("Invalid EXIT command: " + command + ".");}}
@@ -297,13 +312,13 @@ public class CommandProcessor {
             String line;
             int lineNumber = 0;
             // Read the file line by line
-            boolean process = true;
+            boolean keepGoing = true;
             ArrayList<SourcingException> errors = new ArrayList<>();
-            while (process && (line = reader.readLine()) != null) {
+            while (keepGoing && (line = reader.readLine()) != null) {
                 lineNumber++;
                 // Message.send(lineNumber + "-" + line);
                 try {
-                    process = processCommand(line);
+                    keepGoing = processCommand(line);
                 } catch (Exception e) {
                     errors.add(new SourcingException(lineNumber, commandFileName, e));
                 }
