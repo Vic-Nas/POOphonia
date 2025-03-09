@@ -31,12 +31,30 @@ public class CommandProcessor {
     public static void interact(MusicLibrary library) {
         CommandProcessor.library = library;
         String command = "";
+        
+        // ANSI color codes
+        final String CYAN = "\u001B[36m";
+        final String GREEN = "\u001B[32m";
+        final String YELLOW = "\u001B[33m";
+        final String RESET = "\u001B[0m";
+        
+        Message.send("\n" + YELLOW + "************* Starting Interactive Mode *************" + RESET);
+        Message.send(CYAN + "Enter commands (type 'EXIT' to quit):" + RESET + "\n");
+        
         try (Scanner scan = new Scanner(System.in)) {
-            while (!command.trim().equals("EXIT")) { 
+            while (!command.trim().equals("EXIT")) {
+                System.out.print(GREEN + "POOphonia> " + RESET);
                 command = scan.nextLine();
-                processCommand(command);
+                
+                if (!command.trim().isEmpty()) {
+                    Message.send(CYAN + "Output:" + RESET);
+                    processCommand(command);
+                    Message.send("");
+                }
             }
         }
+        
+        Message.send(YELLOW + "************* Ending Interactive Mode *************" + RESET + "\n");
     }
 
     // Method to check if a command is a comment
