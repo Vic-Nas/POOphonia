@@ -90,5 +90,10 @@ public final class Podcast extends MusicItem {
                 this.getId(), this.getTitle(), this.getReleaseYear(), this.getHost(), this.getEpisodeNumber(), this.getTopic());
     }
 
+    @Override
+    public String getArtist() {
+        return this.getHost();
+    }
+
     
 }

@@ -45,6 +45,7 @@ public final class Album extends MusicItem {
         setInvalidFields(invalidFields);
     }
 
+    @Override
     public String getArtist() {
         return artist;
     }

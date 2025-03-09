@@ -3,9 +3,7 @@ package services;
 import java.util.ArrayList;
 import java.util.List;
 
-import models.Album;
 import models.MusicItem;
-import models.Song;
 import ui.Message;
 
 public class MusicLibrary {
@@ -41,6 +39,7 @@ public class MusicLibrary {
         return null;
     }
 
+
     public MusicItem searchItem(int id) {
         for (MusicItem item : items) {
             if (item.getId() == id) {
@@ -53,12 +52,9 @@ public class MusicLibrary {
 
     public MusicItem searchItem(String title, String artist) {
         for (MusicItem item : items) {
-            if (item instanceof Song song && title.equals(song.getTitle()) && artist.equals(song.getArtist())) {
-                this.searchedItem = song;
-                return song;
-            } else if (item instanceof Album album && title.equals(album.getTitle()) && artist.equals(album.getArtist())) {
-                this.searchedItem = album;
-                return album;
+            if (item.getTitle().equals(title) && item.getArtist().equals(artist)) {
+                this.searchedItem = item;
+                return item;
             }
         }
         return null;
@@ -68,6 +64,16 @@ public class MusicLibrary {
         items.remove(item);
         if (item.isPlaying()){
             isPlaying = null;
+        }
+    }
+
+    public void removeItem(int id) {
+        MusicItem itemToRemove = this.searchItem(id);
+        if (itemToRemove != null) {
+            this.removeItem(itemToRemove);
+            Message.send("Removed " + itemToRemove.info() + " successfully.");
+        } else {
+            Message.send("REMOVE item " + id + " failed; no such item.");
         }
     }
 
@@ -108,6 +114,7 @@ public class MusicLibrary {
     }
 
     public MusicItem getSearchedItem() {
-        return searchedItem;
+        if (this.items.contains(this.searchedItem)) {return searchedItem;}
+        return null;
     }
 }

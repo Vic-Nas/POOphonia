@@ -90,4 +90,6 @@ public abstract class MusicItem {
     public void setInvalidFields(ArrayList<String> invalidFields) {
         this.invalidFields = new ArrayList<>(invalidFields);
     }
+
+    public abstract String getArtist();
 }

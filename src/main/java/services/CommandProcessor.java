@@ -30,9 +30,11 @@ public class CommandProcessor {
 
     public static void interact(MusicLibrary library) {
         CommandProcessor.library = library;
+        String command = "";
         try (Scanner scan = new Scanner(System.in)) {
-            while (true) { 
-                processCommand(scan.nextLine());
+            while (!command.trim().equals("EXIT")) { 
+                command = scan.nextLine();
+                processCommand(command);
             }
         }
     }
@@ -202,15 +204,10 @@ public class CommandProcessor {
                     if (actionAndArgs.length == 2) {
                         try {
                             int id = Integer.parseInt(actionAndArgs[1]);
-                            MusicItem itemToRemove = library.searchItem(id);
+                            library.removeItem(id);
+                                     
                             // If the item is found
-                            if (itemToRemove != null) {
-                                library.removeItem(itemToRemove);
-                                Message.send("Removed " + itemToRemove.info() + " successfully.");
-                                MusicLibraryFileHandler.saveLibrary(library.getItems(), libraryFile);
-                            } else {
-                                Message.send("REMOVE item " + id + " failed; no such item.");
-                            }
+                            MusicLibraryFileHandler.saveLibrary(library.getItems(), libraryFile);
                         } catch (NumberFormatException e) {
                             Message.send("Invalid ID for REMOVE command: " + actionAndArgs[1] + ".");
                         }
