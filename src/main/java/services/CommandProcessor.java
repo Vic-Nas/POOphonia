@@ -11,7 +11,7 @@ import models.MusicItem;
 import models.MusicItemFactory;
 import ui.Message;
 
-public class CommandProcessor {
+public class CommandProcessor{
     // Default file path for the music library data
     private static String libraryFile = MusicLibraryFileHandler.getDefaultFile();
 
@@ -43,10 +43,10 @@ public class CommandProcessor {
         
         try (Scanner scan = new Scanner(System.in)) {
             while (!command.trim().equals("EXIT")) {
-                System.out.print(GREEN + "POOphonia> " + RESET);
+                System.out.print(GREEN + libraryFile + "> " + RESET);
                 command = scan.nextLine();
                 
-                if (!command.trim().isEmpty()) {
+                if (!command.isBlank()) {
                     Message.send(CYAN + "Output:" + RESET);
                     processCommand(command);
                     Message.send("");
@@ -81,7 +81,7 @@ public class CommandProcessor {
             String[] actionAndArgs = command.split(" ", 2);
             String action = actionAndArgs[0]; // Extracts the action from the command
             switch (action) {
-                case "ADD" -> {
+                case "ADD"    -> {
                     if (actionAndArgs.length == 2) {
                         String[] typeAndParts = actionAndArgs[1].split(",");
                         for (int i = 0; i < typeAndParts.length; i++) {
@@ -114,7 +114,7 @@ public class CommandProcessor {
                         Message.send("Invalid ADD command: " + command + ".");
                     }
                 }
-                case "CLEAR" -> {
+                case "CLEAR"  -> {
                     if (actionAndArgs.length == 1){
                     if (library.getItems().isEmpty()){
                         Message.send("Music library is already empty.");
@@ -126,15 +126,14 @@ public class CommandProcessor {
                     Message.send("Invalid CLEAR command: " + command);
                 }
                 }
-                case "EXIT" ->{
+                case "EXIT"   -> {
                     if (actionAndArgs.length == 1){
                         Message.send("Exiting program...");
                         excited = true;
                         return false;
                     }else{
                         Message.send("Invalid EXIT command: " + command + ".");}}
-                case "LIST" ->
-                    {
+                case "LIST"   -> {
                         if (actionAndArgs.length == 1){
                             if (library.getItems().isEmpty()){
                                 Message.send("The library is empty.");
@@ -143,26 +142,24 @@ public class CommandProcessor {
                             }
                         }else{
                             Message.send("Invalid LIST command: " + command + ".");}}
-                case "LOAD" -> {
-                    switch (actionAndArgs.length) {
-                        case 1 -> {// If no file name is provided, load from the default file
-                            Message.send("Loading from default library file.");
-                            library = new MusicLibrary(MusicLibraryFileHandler.loadLibrary(libraryFile));}
-                        case 2 -> {
-                            
-                            String fileName = actionAndArgs[1];
-                            Message.send("Loading from file: " + actionAndArgs[1]);
-                            MusicLibrary temp = new MusicLibrary(MusicLibraryFileHandler.loadLibrary(fileName));
-                            if (!temp.getItems().isEmpty()){
-                                libraryFile = fileName; // Updates the library file name
-                                library = temp;
-                            }
+                case "LOAD"   -> {
+                    if (actionAndArgs.length == 1) {
+                        Message.send("Loading from default library file.");
+                        libraryFile = MusicLibraryFileHandler.getDefaultFile();
+                        library = new MusicLibrary(MusicLibraryFileHandler.loadLibrary(libraryFile));
+                    } else if (actionAndArgs.length == 2 && !actionAndArgs[1].contains(" ")) {
+                        String fileName = actionAndArgs[1];
+                        Message.send("Loading from file: " + fileName);
+                        MusicLibrary temp = new MusicLibrary(MusicLibraryFileHandler.loadLibrary(fileName));
+                        if (!temp.getItems().isEmpty()) {
+                        libraryFile = fileName; // Updates the library file name
+                        library = temp;
                         }
-                        default ->
-                            Message.send("Invalid arguments for LOAD.");
+                    } else {
+                        Message.send("Invalid arguments for LOAD.");
                     }
                 }
-                case "PAUSE" -> {
+                case "PAUSE"  -> {
                     if (actionAndArgs.length == 1) {
                         // Check if an item is currently playing
                         if (library.getIsPlaying() != null) {
@@ -179,7 +176,7 @@ public class CommandProcessor {
                         Message.send("Invalid PAUSE command: " + command + ".");
                     }
                 }
-                case "PLAY" -> {
+                case "PLAY"   -> {
                     if (actionAndArgs.length == 2) {
                         String[] playArgs = actionAndArgs[1].split(" by "); // Splits the arguments into title and artist
                         // If both title and artist are provided
@@ -234,18 +231,15 @@ public class CommandProcessor {
                     }
                 }
 
-                case "SAVE" -> { // Case for saving the music library to a file
-                    // Switch statement to handle different numbers of arguments
-                    switch (actionAndArgs.length) {
-                        case 1 -> {// If no file name is provided, save to the default file
-                            Message.send("Saving to default library file.");
-                            MusicLibraryFileHandler.saveLibrary(library.getItems(), libraryFile); }
-                        case 2 -> { // If a file name is provided, save to that file
-                            Message.send("Saving to file: " + actionAndArgs[1] + ".");
-                            MusicLibraryFileHandler.saveLibrary(library.getItems(), actionAndArgs[1]); // Saves the library to the specified file
-                        }
-                        default -> // If the number of arguments is invalid, send an error message
-                            Message.send("Invalid arguments for SAVE.");
+                case "SAVE"   -> {
+                    if (actionAndArgs.length == 1) {
+                        Message.send("Saving to default library file.");
+                        MusicLibraryFileHandler.saveLibrary(library.getItems(), libraryFile);
+                    } else if (actionAndArgs.length == 2 && !actionAndArgs[1].contains(" ")) {
+                        Message.send("Saving to file: " + actionAndArgs[1] + ".");
+                        MusicLibraryFileHandler.saveLibrary(library.getItems(), actionAndArgs[1]);
+                    } else {
+                        Message.send("Invalid arguments for SAVE.");
                     }
                 }
 
@@ -297,7 +291,7 @@ public class CommandProcessor {
                             Message.send("Invalid arguments for SOURCE.");
                     }
                 }
-                case "STOP" ->{
+                case "STOP"   -> {
                     if (actionAndArgs.length == 1){
                             if (library.getIsPlaying() == null){
                                 Message.send("No item to STOP.");
@@ -307,8 +301,9 @@ public class CommandProcessor {
                     }else{
                         Message.send("Invalid STOP command: " + command + ".");}}
                         
-                default ->
+                default       -> {
                     Message.send("Unknown command: " + command + ".");
+                }
             }
         }
         return true;

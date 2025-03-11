@@ -1,0 +1,94 @@
+# Test des commandes invalides et commentaires
+UNKNOWN
+ADD
+REMOVE
+SEARCH
+PLAY
+PAUSE extra
+STOP extra
+LIST extra
+CLEAR extra
+EXIT extra
+SAVE multiple arguments test
+LOAD multiple arguments test
+
+# Test ADD - Cas d'erreur
+ADD song,1,title
+ADD song,1,title,1971,artist,genre,abc
+ADD song,-1,title,1971,artist,genre,183
+ADD song,1,title,1800,artist,genre,183
+ADD unknown,1,title,1971,artist,genre,183
+ADD song,1,,1971,artist,genre,183
+ADD album,2,Title,1971,Artist,,5
+ADD podcast,3,Title,1971,,Topic,5
+
+# Test ADD - Cas valides
+ADD song,1,Imagine,1971,John Lennon,Rock,183
+ADD album,2,Thriller,1982,Michael Jackson,Epic Records,9
+ADD podcast,3,Tech Talk,2023,Jane Doe,Technology,42
+ADD song,4,Bohemian Rhapsody,1975,Queen,Rock,354
+
+# Test ADD - Doublons
+ADD song,1,Imagine,1971,John Lennon,Rock,183
+ADD song,5,Imagine,1971,John Lennon,Rock,183
+
+# Test LIST
+LIST
+CLEAR
+LIST
+
+# Test SEARCH - Tous les cas
+SEARCH 1
+SEARCH 999
+SEARCH Imagine by John Lennon
+SEARCH Imagine by Unknown
+SEARCH Imagine
+SEARCH abc by def
+
+# Test PLAY - Tous les cas
+PLAY
+PLAY 1
+PLAY 999
+PLAY Imagine by John Lennon
+PLAY Unknown by Artist
+SEARCH 1
+PLAY
+PLAY Imagine by John Lennon
+
+# Test PAUSE/STOP
+PAUSE
+PLAY 1
+PAUSE
+PAUSE
+STOP
+STOP
+PLAY 1
+STOP
+
+# Test REMOVE
+REMOVE 999
+REMOVE 1
+REMOVE 1
+LIST
+
+# Test LOAD/SAVE
+SAVE testlib
+CLEAR
+LIST
+LOAD testlib
+LIST
+LOAD nonexistent
+SAVE
+
+# Test CLEAR
+ADD song,1,Test Song,1971,Artist,Genre,180
+LIST
+CLEAR
+LIST
+CLEAR
+
+# Test EXIT (sera ignoré car dans un fichier)
+EXIT
+
+# Nettoyage final
+CLEAR
